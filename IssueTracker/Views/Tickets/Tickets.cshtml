@@ -1,0 +1,239 @@
+﻿@model IssueTracker.Models.TicketsModel
+@{
+    ViewBag.Title = "Tickets";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<style>
+    .divFilter {
+        gap: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        flex: 1 1 150px;
+    }
+
+    .form-group label {
+        color: #494d51;
+        font-weight: 500;
+        font-family: 'Roboto', sans-serif;
+        margin-bottom: 10px;
+    }
+
+    .btn-group button {
+        color: #115272;
+        padding: 5px 20px;
+        border: 1px solid #115272;
+        text-align: right;
+    }
+    .btn-group button:not(:last-child) {
+        border-right: none; /* Prevent double borders */
+    }
+    .btn-group button.active {
+        color: #fff;
+        box-shadow: none;
+        background-color: #115272;
+    }
+
+    .reqstBtn {
+        text-decoration: none;
+    }
+    .table tbody td,
+    .table thead tr th {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .table tbody tr td {
+        margin: 0px;
+        padding: 10px;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+    .table thead tr th {
+        padding: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        vertical-align: middle
+    }
+</style>
+
+<script>
+    function btnNewTicket() {
+        window.location.href = "/NewTicket/NewTicket";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const dateCells = document.querySelectorAll(".tdCreatedDate");
+
+        dateCells.forEach(function (cell) {
+            const dateValue = new Date(cell.innerText);
+            cell.innerText = dateValue.toLocaleDateString();
+        });
+    });
+
+    $(function () {
+        const buttons = document.querySelectorAll('#myButtonGroup button');
+
+        for (let i = 0; i < buttons.length; i++) {
+            buttons[i].addEventListener('click', function () {
+                $("#SelectedValue").val(this.value);
+                const selectedVal = this.value;
+                document.forms["frmPaging"].submit();
+            });
+        }
+
+        $("#myButtonGroup").on("click", "button", function () {
+            $("#myButtonGroup button").removeClass("active");
+            $(this).addClass("active");
+        });
+    });
+
+    function PagerClick(index) {
+        document.getElementById("hfCurrentPageIndex").value = index;
+        document.forms["frmPaging"].submit();
+    };
+</script>
+
+<!-- Header -->
+<div class="d-flex justify-content-between">
+    <h5>Tickets</h5>
+    <button class="btn" onclick="btnNewTicket()" style="background: #115272; color: #ffffff; border: none; box-shadow: none"><i class="fa fa-plus-circle"></i>&nbsp;Create Ticket</button>
+</div>
+<!-- End Header -->
+
+<!-- Tickets Table -->
+<form asp-action="Tickets" asp-controller="Tickets" method="post" name="frmPaging">
+    <!-- Filter -->
+    <div class="divFilter d-flex justify-content-start pt-3 pb-5">
+        <div class="form-group">
+            <label></label>
+            <div class="form-group has-search pt-2 mt-1">
+                <span class="fa fa-search form-control-feedback"></span>
+                <input type="text" class="form-control shadow-sm" placeholder="Search" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Priority</label>
+            <div class="d-flex flex-row justify-content-end">
+                <div id="myButtonGroup" class="btn-group">
+                    @foreach (var item in Model.Button_Value)
+                    {
+                        if (item == Model.Button_Value.First())
+                        {
+                            <button class="btn active" value="@item.Id">@item.Value</button>
+                        }
+                        else
+                        {
+                            <button class="btn" value="@item.Id">@item.Value</button>
+                        }
+                    }
+                </div>
+                @Html.HiddenFor(Model => Model.SelectedValue)
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Created on</label>
+            <div class="d-flex justify-content-between gap-2">
+                <input type="date" class="form-control" />
+                <input type="date" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group"></div>
+    </div>
+    <!-- End Filter -->
+
+
+    <div class="table-responsive">
+        <label class="form-control-plaintext small" value="">@Html.Label(Model.TotalRecords)</label>
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th style="text-align: center">
+                        @Html.DisplayNameFor(modelTitle => modelTitle.TicketID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(modelTitle => modelTitle.Subject)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(modelTitle => modelTitle.Category)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(modelTitle => modelTitle.Status)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(modelTitle => modelTitle.Priority)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(modelTitle => modelTitle.Requester)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(modelTitle => modelTitle.Assigned_QMS)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(modelTitle => modelTitle.CreatedDate)
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.TicketList)
+                {
+                    <tr>
+                        <td style="width: 8%; text-align: center">
+                            @Html.ActionLink(item.TicketID, "TicketDetails", "TicketDetails", new { ID = item.TicketID }, new { @class = "reqstBtn" })
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Subject)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category)
+                        </td>
+                        <td style="text-align: center">
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                        <td style="text-align: center">
+                            @Html.DisplayFor(modelItem => item.Priority)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Requester)
+                        </td>
+                         <td>
+                            @Html.DisplayFor(modelItem => item.Assigned_QMS)
+                        </td>
+                        <td class="tdCreatedDate" style="width: 8%; text-align: center">
+                            @Html.DisplayFor(modelItem => item.CreatedDate)
+                        </td>
+                        <td style="text-align: center">
+                            <a href="#" class="small" style="color: #115272;"> <i class="fa fa-ellipsis-v"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @*<label class="small" style="text-align: right; float: right; padding: 10px;">@Html.Label(Model.CurrentPage)</label>*@
+    </div>
+
+    <!-- Pagination -->
+@*    <div class="pagination-ys justify-content-center">
+        <table>
+            <tr>
+                @for (int i = 1; i <= Model.PageCount; i++)
+                {
+                    <td>
+                        @if (i != Model.CurrentPageIndex)
+                        {
+                            <a href="javascript:PagerClick(@i);" class="shadow-sm">@i</a>
+                        }
+                        else
+                        {
+                            <span class="shadow-sm">@i</span>
+                        }
+                    </td>
+                }
+            </tr>
+        </table>
+    </div>*@
+    <!-- End Pagination -->
+    @*<input type="hidden" id="hfCurrentPageIndex" name="currentPageIndex" />*@
+</form>
+<!-- End Tickets Table -->

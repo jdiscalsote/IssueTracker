@@ -1,0 +1,85 @@
+﻿body {
+    overflow-y: scroll;
+}
+
+body::-webkit-scrollbar {
+    width: 0px;
+}
+body::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.4);
+    border-radius: 10rem;
+    border: 1px solid #fff;
+}
+body::-webkit-scrollbar-track-piece:start {
+    background-color: transparent;
+}
+body::-webkit-scrollbar-track-piece:end {
+    background-color: transparent;
+}
+
+.text-small {
+    font-size: 14px;
+}
+.backButton {
+    color: #000;
+    font-size: 14px;
+    right: 10px;
+    position: absolute;
+}
+
+.btnMenu:focus, .navbar-toggler:focus {
+    outline: none;
+    box-shadow: none;
+} 
+
+nav .breadcrumb-item.active {
+    color: #115272;
+}
+
+.has-search .form-control {
+    opacity: 0.8;
+    padding: 6px;
+    padding-left: 2rem;
+    border-radius: 5px;
+}
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.500rem;
+    height: 2.500rem;
+    line-height: 2.300rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+
+.form-control, .form-control-plaintext {
+    font-size: 14px;
+}
+.form-control:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.form-group .fw-bold {
+    opacity: 0.9;
+}
+
+.alert {
+    top: 100px;
+    opacity: 0.8;
+    right: 25px;
+    padding: 10px;
+    font-size: 12px;
+    position: absolute;
+}
+
+.pageContent {
+    margin-top: 60px;
+}
+
+@font-face {
+    font-family: 'Code2000-rdLO';
+    src: url('../fonts\Code2000-rdLO.ttf') format('truetype');
+}

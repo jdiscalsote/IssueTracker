@@ -1,0 +1,194 @@
+﻿@model IssueTracker.Models.LoginModel
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <title class="sysTitle">IssueTracker - Login</title>
+
+    <environment include="Development">
+        <link href="~/lib/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="~/lib/css/font-awesome.min.css" rel="stylesheet" />
+
+        @*<script src="https://kit.fontawesome.com/a076d05399.js"></script>*@
+
+        <script src="~/lib/js/kit.fontawesome.js"></script>
+        <script src="~/lib/js/jquery.min.js"></script>
+        <script src="~/lib/js/bootstrap.min.js"></script>
+        <script src="~/lib/js/bootstrap.bundle.min.js"></script>
+    </environment>
+</head>
+<body>
+    <style>
+        html, body {
+            height: 100%;
+            background-color: #f3f6f8;
+        }
+
+        .mainDev {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+        }
+
+        .container-login {
+            width: 500px;
+            margin: 15px;
+            padding: 10px;
+        }
+
+        .text-small {
+            font-size: 14px;
+        }
+
+        .login-header {
+            text-align: center;
+        }
+
+        .sysTitle {
+            color: #4f4f4f;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .btnConfirm {
+            color: #111;
+            padding: 12px;
+            width: 100%;
+            font-size: 22px;
+            border: none;
+            background: none;
+            -webkit-transition: 0.2s;
+            transition: 0.2s;
+        }
+        .btnConfirm:hover {
+            color: #c84747;
+            -webkit-transition: 0.3s ease-out;
+            transition: 0.3s ease-out;
+        }
+
+        .form-control, .form-control-plaintext {
+            font-size: 14px;
+        }
+        .form-control:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        .form-group {
+            padding: 10px;
+        }
+        .form-group input {
+            padding: 10px;
+        }
+
+        .login-footer {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .login-footer-item {
+            flex: 1 100px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .alert {
+            top: 20px;
+            opacity: 0.8;
+            right: 20px;
+            padding: 10px;
+            font-size: 12px;
+            position: absolute;
+        }
+    </style>
+
+    @{
+        // Retrieving value of status from controller
+        int status = ViewBag.Status == null ? 0 : ViewBag.Status;
+    }
+
+    <script>
+        var status = @status;
+
+        if (status == 1) {
+            window.setTimeout(function () {
+                $(".alert").fadeTo(500, 0, function () {
+                    window.location.href = "/Dashboard/Dashboard";
+                });
+            }, 1500);
+        }
+        else {
+            window.setTimeout(function () {
+                $(".alert").fadeTo(500, 0)
+            }, 1500);
+        };
+
+        $(document).ready(function () {
+            $('#AccessCode').keyup(function () {
+                $(this).val($(this).val().toUpperCase());
+            });
+        });
+    </script>
+
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Raw(@ViewBag.Alert)
+        </div>
+    </div>
+
+    <div class="mainDev">
+        <div class="container-login">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="container">
+                        <div class="login-header p-2">
+                            <div class="login-logo">
+                                <img src="~/lib/img/login-logo.jpg" class="figure-img" width="130" />
+                            </div>
+                            <label class="sysTitle">IssueTracker System</label>
+                        </div>
+
+                        <form asp-action="Validate" asp-controller="Login" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label for="Username" class="text-black mb-1">Username</label>
+                                <input type="text" class="form-control" asp-for="AccessCode" autocomplete="off" />
+                            </div>
+                            <div class="form-group">
+                                <label for="Password" class="text-black mb-1">Password</label>
+                                <input type="password" class="form-control" asp-for="Password" autocomplete="off" />
+                            </div>
+
+                            <div class="d-flex flex-row-reverse p-2">
+                                <a href="" class="text-small" style="color: #115272; text-decoration: none">Forgot password?</a>
+                            </div>
+
+                            <div class="col-md-12" style="text-align:center">
+                                <button type="submit" class="btnConfirm">Secure Login &nbsp; <i class="fa fa-arrow-right small"></i></button>
+                            </div>
+                        </form>
+
+                        <div class="login-footer">                            
+                            <div class="login-footer-item"><hr /></div>
+                            <div class="login-footer-item">or</div>
+                            <div class="login-footer-item"><hr /></div>
+                        </div>
+
+                        <div class="text-center">
+                            <a href="/Dashboard/Dashboard" class="nav-link text-black">Login with System Admin?</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disabled Right Click -->
+    <script type="text/javascript">
+        document.addEventListener('contextmenu', event => event.preventDefault());
+    </script>
+</body>
+</html>

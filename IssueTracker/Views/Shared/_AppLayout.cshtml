@@ -1,0 +1,342 @@
+﻿@{
+    string accessCode = ViewBag.AccessCode as string;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <link rel="icon" href="~/lib/img/issuetracker.png" type="image/gif" sizes="16x16" />
+
+    <title class="sysTitle">IssueTracker - @ViewBag.Title</title>
+
+    <environment include="Development">
+        <link href="~/lib/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="~/lib/css/font-awesome.min.css" rel="stylesheet" />
+        <link href="~/lib/css/style.css" rel="stylesheet" />
+
+        <script src="~/lib/js/jquery.min.js"></script>
+        <script src="~/lib/js/bootstrap.min.js"></script>
+        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+        <script src="~/lib/js/style.js"></script>
+        <script src="~/lib/js/kit.fontawesome.js"></script>
+        <script src="~/lib/js/sweetalert2.min.js"></script>
+        <script src="~/lib/js/prettify.min.js"></script>
+        <script src="~/lib/js/topbar.min.js"></script>
+    </environment>
+
+    <style>
+        .bodyPage {
+            display: none;
+        }
+
+/*        .fixed-top {
+            width: 100%;
+            top: 0px;
+            padding-top: 11px;
+            height: 70px;
+            overflow: hidden;
+            z-index: 100;
+            background-color: #ffffff;
+            box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2), 0 5px 10px 0 rgba(0, 0, 0, 0.19);
+            transition: all 0.6s ease;
+        }*/
+
+        .fixed-top {
+            width: 100%;
+            top: 0px;
+            padding-top: 11px;
+            height: 60px;
+            overflow: hidden;
+            z-index: 100;
+            color: darkgray;
+            background-color: #657c92;
+            box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2), 0 5px 10px 0 rgba(0, 0, 0, 0.19);
+            transition: all 0.6s ease;
+        }
+
+        .navbarHeader { /*Moblie View*/
+            margin-top: -25px;
+        }
+
+        .offcanvasSide { /*Desktop View*/
+            width: 20%;
+            transition: 0.5s;
+        }
+
+        .offcanvasMobile { /*Moblie View*/
+            width: 50%;
+            transition: 0.5s;
+        }
+
+        .offcanvasHeader {
+            height: 60px;
+            background-color: #657c92;
+            box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2), 0 5px 10px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .nav-item { /*Side Nav Link Button*/
+            font-size: 14px;
+        }
+
+/*        .sticky-top {
+            background-color: #ffffff;
+            box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.2), 0 5px 10px 0 rgba(0, 0, 0, 0.19);
+            transition: all 0.6s ease;
+        }*/
+
+        .navbar a {
+            color: #fff !important;
+            font-size: 16px;
+        }
+        .navbar-brand {
+            font-weight: 500;
+        }
+
+        .navbar-nav .nav-item {
+            padding: 5px;
+        }
+        .navbar-nav .nav-item .nav-menu,
+        .navbar-nav .nav-item .dropdown-item {
+            padding: 8px;
+        }
+        .navbar-nav .nav-item .nav-menu.active {
+            color: #fff;
+            background-color: #657c92;
+            border-radius: 6px;
+        }
+        .navbar-nav .nav-item .nav-menu:hover {
+            color: #fff;
+            background-color: #657c92;
+            border-radius: 6px;
+        }
+        .navbar-nav .nav-item .dropdown-item {
+            border-radius: 6px;
+        }
+
+        .swal2-popup {
+            max-width: 400px;
+        }
+        .swal2-html-container {
+            font-size: 14px;
+        }
+        .swal2-actions .swal2-confirm:focus, 
+        .swal2-actions .swal2-cancel:focus {
+            border: none;
+            outline: none;
+            box-shadow: none;
+        }
+        .swal2-actions .swal2-confirm,
+        .swal2-actions .swal2-cancel {
+            width: 100px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .swal2-icon.swal2-question {
+            border-color: #87adbd;
+            color: #87adbd;
+        } 
+        .swal2-icon-content {
+            color: #87adbd;
+        }
+
+        .bar1, .bar2, .bar3 {
+            width: 35px;
+            height: 5px;
+            background-color: #fff;
+            margin: 6px 0;
+            transition: 0.4s;
+        }
+        .change .bar1 {
+            transform: translate(0, 11px) rotate(-45deg);
+        }
+        .change .bar2 {
+            opacity: 0;
+        }
+        .change .bar3 {
+            transform: translate(0, -11px) rotate(45deg);
+        }
+    </style>
+
+    <script>
+        $(function () {
+            prettyPrint()
+            function resetToDefaults() {
+                topbar.config({
+                    autoRun: true,
+                    barThickness: 4,
+                    barColors: {
+                        '0': 'rgba(26,  188, 156, .9)',
+                        '.25': 'rgba(52,  152, 219, .9)',
+                        '.50': 'rgba(241, 196, 15,  .9)',
+                        '.75': 'rgba(230, 126, 34,  .9)',
+                        '1.0': 'rgba(211, 84,  0,   .9)'
+                    },
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(0,   0,   0,   .6)',
+                    className: 'topbar'
+                })
+            }
+
+            // Page load
+            resetToDefaults()
+            topbar.show()
+            setTimeout(function () {
+                $('.bodyPage').fadeIn('slow')
+                topbar.hide()
+            }, 1000)
+
+            // Logout Function
+            $("#logoutBtn").click(function () {
+                Swal.fire
+                    ({
+                        title: 'Logout Session!',
+                        icon: 'question',
+                        html:
+                            'Are you sure you want to logout?',
+                        showCancelButton: true,
+                        confirmButtonColor: '#aa2c22',
+                        confirmButtonText: '<a href="/Login/Index" class="text-white" style="text-decoration:none"> ' + 'Yes' + '</a>',
+                        allowOutsideClick: false
+                    })
+            });
+        })
+
+        function openMenu(x) {
+            x.classList.toggle("change");
+        }
+    </script>
+
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-sm navbar-expand-md navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid navbarHeader">
+            <dl class="pt-3">
+                <dt><a class="navbar-brand" href="/Dashboard/Dashboard">Issue Tracker</a></dt>
+                <dd class="small text-white" style="font-size: 12px">EndGame Tech</dd>
+            </dl>
+            <button class="btn btnMenu" type="button" data-bs-toggle="offcanvas" data-bs-target="#sideNav" onclick="openMenu(this)">
+                <div class="bar1"></div>
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+            </button>
+        </div>
+    </nav>
+    <!-- Navigation -->
+
+    <!-- Left Side Navigation -->
+    <div class="offcanvas offcanvas-start offcanvasSide" id="sideNav" data-bs-keyboard="false" data-bs-backdrop="false" tabindex="-1">
+        <div class="offcanvas-header offcanvasHeader">
+            <dl class="pt-4">
+                <dt>
+                    @ViewBag.AccessCode
+                    <label class="empName" ID="lblUsername">@accessCode</label>
+                </dt>
+                <dd class="small text-white" style="font-size: 12px">
+                    <asp:Label ID="lblRole" runat="server" />
+                </dd>
+            </dl>
+        </div>
+        <div class="offcanvas-body">
+
+            <h6>Menu</h6>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    @if (ViewBag.Title == "Dashboard")
+                    {
+                        <a class="dropdown-item nav-menu active" href="/Dashboard/Dashboard"><i class="fa fa-dashboard"></i>&nbsp;Dashboard</a>
+                    }
+                    else
+                    {
+                        <a class="dropdown-item nav-menu" href="/Dashboard/Dashboard"><i class="fa fa-dashboard"></i>&nbsp;Dashboard</a>
+                    }
+                </li>
+                <li class="nav-item">
+                    @if (ViewBag.Title == "Tickets" || ViewBag.Title == "New Ticket" || ViewBag.Title == "Ticket Details")
+                    {
+                        <a class="dropdown-item nav-menu active" href="/Tickets/Tickets"><i class="fa fa-ticket"></i>&nbsp;Tickets</a>
+                    }
+                    else
+                    {
+                        <a class="dropdown-item nav-menu" href="/Tickets/Tickets"><i class="fa fa-ticket"></i>&nbsp;Tickets</a>
+                    }
+                </li>
+                <li class="nav-item">
+                    @if (ViewBag.Title == "Requesters")
+                    {
+                        <a class="dropdown-item nav-menu active" href="/Requesters/Requesters"><i class="fa fa-users"></i>&nbsp;Requesters</a>
+                    }
+                    else
+                    {
+                        <a class="dropdown-item nav-menu" href="/Requesters/Requesters"><i class="fa fa-users"></i>&nbsp;Requesters</a>
+                    }
+                </li>
+                <li class="nav-item">
+                    @if (ViewBag.Title == "Organizations")
+                    {
+                        <a class="dropdown-item nav-menu active" href="/Organizations/Organizations"><i class="fa fa-business-time"></i>&nbsp;Organizations</a>
+                    }
+                    else
+                    {
+                        <a class="dropdown-item nav-menu" href="/Organizations/Organizations"><i class="fa fa-business-time"></i>&nbsp;Organizations</a>
+                    }
+                </li>
+            </ul>
+
+            <br />
+
+            <h6>Settings</h6>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="#" class="dropdown-item"><i class="fa fa-user-circle"></i>&nbsp;Account</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" id="logoutBtn" class="dropdown-item"><i class="fa fa-sign-out-alt"></i>&nbsp;Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- End Left Side Navigation -->
+
+    <script>
+        jQuery(function ($) {
+            $(window).resize(function () {
+                if (window.matchMedia('(max-width: 575px)').matches) {
+                    $(".offcanvasSide").addClass("offcanvasMobile");
+                    $(".navbar>div").addClass("navbarHeader");
+                }
+                else {
+                    $(".offcanvasSide").removeClass("offcanvasMobile");
+                    $(".navbar>div").removeClass("navbarHeader");
+                }
+            });
+
+            $(document).load($(window).width(changeClass));
+            function changeClass() {
+                if (window.matchMedia('(max-width: 575px)').matches) {
+                    $(".offcanvasSide").addClass("offcanvasMobile");
+                    $(".navbar>div").addClass("navbarHeader");
+                }
+                else {
+                    $(".offcanvasSide").removeClass("offcanvasMobile");
+                    $(".navbar>div").removeClass("navbarHeader");
+                }
+            }
+        });
+    </script>
+
+    <environment include="Development">
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </environment>
+
+    <!-- Page Content -->
+    <div class="container-fluid pageContent bodyPage p-4">
+        @RenderBody()
+    </div>
+    <!-- End Page Content -->
+</body>
+</html>

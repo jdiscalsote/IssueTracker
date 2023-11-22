@@ -1,0 +1,263 @@
+﻿@model IssueTracker.Models.DashboardModel
+@{
+    string AccessCode = TempData["AccessCode"] as string;
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<style>
+    .divSection1 {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .section1 {
+        flex: 1 1 150px;
+    }
+
+    .btn-group button {
+        color: #115272;
+        padding: 10px 20px;
+        border: 1px solid #115272;
+        text-align: right;
+    }
+    .btn-group button:not(:nth-last-child(-n+2)) {
+        border-right: none; /* Prevent double borders */
+        border-radius: 0px;
+    }
+    .btn-group button.active {
+        color: #fff;
+        box-shadow: none;
+        background-color: #115272;
+        border-radius: 5px;
+    }
+
+    .divSection2 {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px 20px;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+    }
+    .section2 {
+        margin: 0px;
+        padding: 30px;
+        flex: 1 100 250px;
+        font-size: 16px;
+        border-radius: 5px;
+        border-radius: 0px;
+        box-shadow: 5px 5px 25px #9d9d9d, -5px -5px 25px #ffffff;
+    }
+    .divSection2 .section2 .section2-Num {
+        font-size: 24px;
+        font-weight: 500;
+    }
+    .divSection2 .section2 .far,
+    .divSection2 .section2 .fas {
+        font-size: 30px;
+    }
+
+    .reqstBtn {
+        text-decoration: none;
+    }
+    .table tbody td,
+    .table thead tr th {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .table tbody tr td {
+        margin: 0px;
+        padding: 10px;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+    .table thead tr th {
+        padding: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        vertical-align: middle
+    }
+</style>
+
+<script>
+    $(function () {
+        const buttons = document.querySelectorAll('#myButtonGroup button');
+
+        for (let i = 0; i < buttons.length; i++) {
+            buttons[i].addEventListener('click', function () {
+                const selectedValue = this.value;
+                //alert(selectedValue);
+            });
+        }
+
+        $("#myButtonGroup").on("click", "button", function () {
+            $("#myButtonGroup button").removeClass("active");
+            $(this).addClass("active");
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        @Html.Raw(@ViewBag.Alert)
+    </div>
+</div>
+
+<div class="divSection1">
+    <div class="section1"><h2>Dashboard</h2></div>
+    <div class="section1">
+        <div class="d-flex flex-row justify-content-end">
+            <div id="myButtonGroup" class="btn-group shadow">
+                @foreach (var item in Model.GroupButtonValues)
+                {
+                    if (item == Model.GroupButtonValues.First())
+                    {
+                        <button class="btn active" value="@item.Id">@item.Value</button>
+                    }
+                    else
+                    {
+                        <button class="btn" value="@item.Id">@item.Value</button>
+                    }
+                }
+                @Html.HiddenFor(Model => Model.SelectedValue)
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="divSection2 pt-5">
+    @foreach (var item in Model.GetDashTicketsTitle)
+    {
+        if (item.ID == 1)
+        {
+            <div class="section2 d-flex flex-row justify-content-between">
+                <div class="section2-Num">@item.Count</div>
+                <div class="p-2">@item.Title</div>
+                <div class="p-1"><i class="far fa-list-alt" style="color: forestgreen"></i></div>
+            </div>
+        }
+        else if (item.ID == 2)
+        {
+            <div class="section2 d-flex flex-row justify-content-between">
+                <div class="section2-Num">@item.Count</div>
+                <div class="p-2">@item.Title</div>
+                <div class="p-1"><i class="fas fa-play" style="color: dodgerblue"></i></div>
+            </div>
+        }
+        else if (item.ID == 3)
+        {
+            <div class="section2 d-flex flex-row justify-content-between">
+                <div class="section2-Num">@item.Count</div>
+                <div class="p-2">@item.Title</div>
+                <div class="p-1"><i class="fas fa-check" style="color: lightslategray"></i></div>
+            </div>
+        }
+        else if (item.ID == 4)
+        {
+            <div class="section2 d-flex flex-row justify-content-between">
+                <div class="section2-Num">@item.Count</div>
+                <div class="p-2">@item.Title</div>
+                <div class="p-1"><i class="far fa-clock" style="color: indianred"></i></div>
+            </div>
+        }
+    }
+</div>
+
+<div class="row pt-5">
+    <div class="col-md-6 mb-3">
+        <div class="card shadow">
+            <div class="card-body">
+                <h6>My Open Tickets</h6>
+                <!-- Tickets Table -->
+                <form asp-action="Dashboard" asp-controller="Dashboard" method="post">
+                    <div class="table-responsive pt-3">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center">
+                                        @Html.DisplayNameFor(modelTitle => modelTitle.TicketID)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(modelTitle => modelTitle.Subject)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(modelTitle => modelTitle.Category)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(modelTitle => modelTitle.Status)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(modelTitle => modelTitle.Priority)
+                                    </th>
+                                    <th>
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.GetOpenTicketTable)
+                                {
+                                    <tr>
+                                        <td style="width: 15%; text-align: center">
+                                            @Html.ActionLink(item.TicketID, "TicketDetails", "TicketDetails", new { ID = item.TicketID }, new { @class = "reqstBtn" })
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Subject)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Category)
+                                        </td>
+                                        <td style="text-align: center">
+                                            @Html.DisplayFor(modelItem => item.Status)
+                                        </td>
+                                        <td style="text-align: center">
+                                            @Html.DisplayFor(modelItem => item.Priority)
+                                        </td>
+                                        <td style="text-align: center">
+                                            <a href="#" class="small" style="color: #115272;"> <i class="fa fa-ellipsis-v"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h6>My Open Tickets by Priority</h6>
+                <div id="chartContainer" style="height: 400px; width: 100%"></div>
+
+                <script>
+                    window.onload = function () {
+                        var chart = new CanvasJS.Chart("chartContainer", {
+                            theme: "light1", // "light1", "light2", "dark1", "dark2"
+                            exportEnabled: true,
+                            animationEnabled: true,
+                            title: {
+                                text: ""
+                            },
+                            subtitles: [{
+                                text: ""
+                            }],
+                            data: [{
+                                type: "pie",
+                                startAngle: 90,
+                                toolTipContent: "<b>{label}</b>: {y}",
+                                showInLegend: "true",
+                                legendText: "{label}",
+                                indexLabel: "{label} - {y}",
+                                dataPoints: @Html.Raw(ViewBag.DataPoints)
+                            }]
+                        });
+                        chart.render();
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+

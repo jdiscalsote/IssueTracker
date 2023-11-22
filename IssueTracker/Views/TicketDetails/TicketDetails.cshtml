@@ -1,0 +1,52 @@
+﻿@model IssueTracker.Models.TicketDetailsModel
+@{
+    ViewBag.Title = "Ticket Details";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Tickets</li>
+            <li class="breadcrumb-item" aria-current="page">Ticket Details</li>
+        </ol>
+    </nav>
+    <a class="nav-link btn-sm float-right backButton" href="/Tickets/Tickets"><i class="fa fa-arrow-left"></i>&nbsp;Back</a>
+</div>
+
+<div class="container-fluid">
+    <h2><label class="h5">@ViewBag.TicketID</label></h2>
+</div>
+
+<!-- Ticket Details Header -->
+<div class="card shadow-sm">
+    <div class="card-body">        
+        <div class="row d-flex justify-content-center pt-2">
+            <div class="col-md-4">
+                <label class="fw-bold">Subject</label>
+                @Html.LabelForModel(Model.Subject, new { @class = "form-control-plaintext" })
+            </div>
+
+            <div class="col-md-2">
+                <label class="fw-bold">Category</label>
+                @Html.LabelForModel(Model.Category, new { @class = "form-control-plaintext" })
+            </div>
+
+            <div class="col-md-2">
+                <label class="fw-bold">Priority</label>
+                @Html.LabelForModel(Model.Priority, new { @class = "form-control-plaintext" })
+            </div>
+
+            <div class="col-md-2">
+                <label class="fw-bold">Created Date</label>
+                @Html.LabelForModel(Model.CreatedDate, new { @class = "form-control-plaintext" })
+            </div>
+
+            <div class="col-md-2">
+                <label class="fw-bold">Created By</label>
+                @Html.LabelForModel(Model.CreatedBy, new { @class = "form-control-plaintext" })
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Ticket Details Header -->

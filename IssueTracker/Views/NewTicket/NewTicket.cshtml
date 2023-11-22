@@ -1,0 +1,192 @@
+﻿@model IssueTracker.Models.NewTicketModel
+@{
+    ViewBag.Title = "New Ticket";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<style>
+    .form-group label {
+        font-weight: 500;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+    .form-group button {
+        padding: 8px;
+        font-size: 14px;
+        text-align: left;
+        border: 1px solid #dadfe3;
+        box-shadow: none;
+        background: none;
+    }
+    .form-group > p {
+        font-size: 10px;
+        border-left: 1px solid #dadfe3;
+        border-right: 1px solid #dadfe3;
+        border-bottom: 1px solid #dadfe3;
+    }
+
+    .newticket-btn button:focus {
+        border: none;
+        outline: none;
+        box-shadow: none;
+    }
+</style>
+
+<script>
+    function GetVal() {
+        var selectedValue = document.getElementById("Requester_List").value;
+
+        fetch('/NewTicket/GetRequesterDetails?user_id=' + selectedValue)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Received data:', data);
+
+                // Check if the expected data fields are present in the response
+                if (typeof data === 'object' || 'UserID' in data) {
+                    document.getElementById("Organization_Name").value = data.departmentDesc;
+                    document.getElementById("Role").value = data.roleID;
+                    document.getElementById("Email").value = data.email;
+                } else {
+                    // Handle missing or unexpected data
+                    console.error('Unexpected data format:', data);
+                }
+            })
+            .catch(error => {
+                // Handle fetch errors or network issues
+                console.error('Fetch error:', error);
+                // Optionally, inform the user or perform error handling actions
+            });
+    }
+
+
+    function charCount() {
+        var length = document.getElementById("Description").value.length;
+        document.getElementById("characters1").innerHTML = length;
+
+        var length = document.getElementById("InternalNote").value.length;
+        document.getElementById("characters2").innerHTML = length;
+    }
+</script>
+
+<div class="d-flex justify-content-between">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Tickets</li>
+            <li class="breadcrumb-item" aria-current="page">New Ticket</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Raw(@ViewBag.Alert)
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between">
+    <h3>Create New Ticket</h3>
+    <a class="nav-link btn-sm float-right backButton" href="/Tickets/Tickets"><i class="fa fa-arrow-left"></i>&nbsp;Back</a>
+</div>
+
+<div class="card shadow mt-4">
+    <div class="card-body">
+        <Form asp-action="CreateNewTicket" asp-controller="NewTicket" method="post">
+            <div class="row">
+                <div class="col-md-5 mb-5" style="border-right: 1px solid #dadfe3">
+                    <div class="m-3">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#Requester">Requester</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#Ticket">Ticket</a>
+                            </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content mt-3">
+                            <div class="tab-pane active" id="Requester">
+                                <div class="form-group">
+                                    <label class="mb-2">Requester</label> <br />
+                                    @Html.DropDownListFor(Model => Model.Requester_List, new SelectList(Model.Requester_List, "UserID", "Username"), "Select Requester", new { @class = "form-control text-muted", onchange = "GetVal()", @required = "required" })
+                                </div>
+
+                                <div class="form-group mt-3">
+                                    <label class="mb-2">Organization</label>
+                                    @Html.TextBoxFor(Model => Model.Organization_Name, new { @placeholder = "Organization Name", @class = "form-control", @readonly = "readonly" })
+                                </div>
+
+                                <div class="form-group mt-3">
+                                    <label class="mb-2">Email</label>
+                                    @Html.TextBoxFor(Model => Model.Email, new { @placeholder = "Requester Email", @class = "form-control", @readonly = "readonly" })
+                                </div>
+
+                                <div class="form-group mt-3">
+                                    <label class="mb-2">Role</label>
+                                    @Html.TextBoxFor(Model => Model.Role, new { @placeholder = "Requester Role", @class = "form-control", @readonly = "readonly" })
+                                </div>
+                            </div>
+
+                            <div class="tab-pane container fade" id="Ticket">
+                                <div class="form-group">
+                                    <label class="mb-2">Category</label> <br />
+                                    @Html.DropDownListFor(Model => Model.Category_List, new SelectList(Model.Category_List, "CategoryCode", "CategoryName"), "Select Category", new { @class = "form-control text-muted", @required = "required" })
+                                </div>
+                                
+                                <div class="form-group mt-3">
+                                    <label class="mb-2">Request Type</label> <br />
+                                    @Html.DropDownListFor(Model => Model.Request_List, new SelectList(Model.Request_List, "RequestCode", "RequestName"), "Select Request Type", new { @class = "form-control text-muted", @required = "required" })
+                                </div>
+
+                                <div class="form-group mt-3">
+                                    <label class="mb-2">Priority</label> <br />
+                                    @Html.DropDownListFor(Model => Model.RequestPriority_List, new SelectList(Model.RequestPriority_List, "PriorityCode", "PriorityName"), "Select Priority", new { @class = "form-control text-muted", @required = "required" })
+                                </div>
+
+                                <div class="form-group mt-3">
+                                    <label class="mb-2">Assignee QMS</label> <br />
+                                    @Html.DropDownListFor(Model => Model.AssigneeQMS_List, new SelectList(Model.AssigneeQMS_List, "UserID", "Username"), "Select QMS", new { @class = "form-control text-muted", @required = "required" })
+                                </div>
+
+                                <div class="form-group mt-3">
+                                    <label class="mb-2">Assignee Programmer</label> <br />
+                                    @Html.DropDownListFor(Model => Model.AssigneeProg_List, new SelectList(Model.AssigneeProg_List, "UserID", "Username"), "Select Programmer", new { @class = "form-control text-muted", @required = "required" })
+                                </div>
+                            </div>
+                        </div>                                      
+                    </div>
+                </div>
+
+                <div class="col-md-7">
+                    <div class="m-3">
+                        <div class="form-group">
+                            <label class="mb-2">Subject</label>
+                            @Html.TextBoxFor(Model => Model.Subject, new { @placeholder = "Ticket Subject", autocomplete = "off", @class = "form-control", @required = "required" })
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label class="mb-2">Description</label>
+                            @Html.TextAreaFor(Model => Model.Description, new { @rows = 5, autocomplete = "off", @class = "form-control", style="border-radius: 0px", @maxlength = 2000, onkeyup = "charCount()", @required = "required" })
+                            <p class="form-control-plaintext d-flex justify-content-end p-1">Characters (with HTML):&nbsp;<span id="characters1">0</span>/2000</p>
+                        </div>
+
+                        <div class="form-group mt-3"> 
+                            <label class="mb-2">Internel Note <span class="text-muted">(optional)</span></label>
+                            @Html.TextAreaFor(Model => Model.InternalNote, new { @rows = 5, autocomplete = "off", @class = "form-control", style="border-radius: 0px", @maxlength = 2000, onkeyup = "charCount()" })
+                            <p class="form-control-plaintext d-flex justify-content-end p-1">Characters (with HTML):&nbsp;<span id="characters2">0</span>/2000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="newticket-btn float-end">
+                <a href="/Tickets/Tickets" class="btn btn-danger">Cancel</a>
+                <button type="submit" class="btn btn-success">Create</button>
+            </div>
+        </Form>
+    </div>
+</div>
