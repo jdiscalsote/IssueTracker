@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="Views\Login\" />
+    <Folder Include="wwwroot\lib\sqldb\" />
   </ItemGroup>
 
   <ItemGroup>
