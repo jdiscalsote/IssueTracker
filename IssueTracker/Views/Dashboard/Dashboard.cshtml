@@ -1,6 +1,6 @@
 ﻿@model IssueTracker.Models.DashboardModel
 @{
-    string AccessCode = TempData["AccessCode"] as string;
+    ViewBag.Name = TempData["AccessCode"] as string;
     ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }

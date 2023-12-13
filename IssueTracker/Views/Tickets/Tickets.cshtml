@@ -1,5 +1,6 @@
 ﻿@model IssueTracker.Models.TicketsModel
 @{
+    ViewBag.Name = TempData["AccessCode"] as string;
     ViewBag.Title = "Tickets";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }

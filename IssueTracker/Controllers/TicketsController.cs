@@ -25,6 +25,8 @@ namespace IssueTracker.Controllers
 
         public IActionResult Tickets()
         {
+            TempData["AccessCode"] = HttpContext.Session.GetString("AccessCode");
+
             TicketsModel ticketsModel = new();
 
             return View(GetListPage(ticketsModel));

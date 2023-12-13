@@ -69,14 +69,12 @@ namespace IssueTracker.Controllers
 
                     SqlParameter passwordParam = new("@strPassword", SqlDbType.VarChar, 50)
                     {
-                        Value = userPass,
+                        Value = userPass,  
                         Direction = ParameterDirection.Input
                     };                   
                     cmd.Parameters.Add(passwordParam);
 
                     HttpContext.Session.SetString("AccessCode", userNam);
-                    string accessCode = HttpContext.Session.GetString("AccessCode");
-                    ViewBag.AccessCode = accessCode;
 
                     int status;
 

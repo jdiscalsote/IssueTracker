@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 
 using IssueTracker.Models;
 using IssueTracker.SystemServices;
+using Newtonsoft.Json.Linq;
 
 namespace IssueTracker.Controllers
 {
@@ -26,6 +27,8 @@ namespace IssueTracker.Controllers
 
         public IActionResult Dashboard()
         {
+            TempData["AccessCode"] = HttpContext.Session.GetString("AccessCode");
+
             var ticketData = new DashboardModel();
 
             DataSet getChart = requestServices.GetPriorityCounts("Chart");

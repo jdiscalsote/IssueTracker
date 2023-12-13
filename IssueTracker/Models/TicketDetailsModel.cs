@@ -14,6 +14,9 @@ namespace IssueTracker.Models
         public string Assigned_QMS { get; set; }
         public string Assigned_Programmer { get; set; }
         public string Requester { get; set; }
+        public string Organization { get; set; }
+        public string Email { get; set; }
+        public string Role { get; set; }
         public string Status { get; set; }
         public string CreatedDate { get; set; }
         public string CreatedBy { get; set; }

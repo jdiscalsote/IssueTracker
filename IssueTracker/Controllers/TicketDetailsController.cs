@@ -47,11 +47,17 @@ namespace IssueTracker.Controllers
             TicketDetailsModel detailsObj = new()
             {
                 Subject = ticketDetails.Tables[0].Rows[0]["Subject"].ToString(),
+                Description = ticketDetails.Tables[0].Rows[0]["Description"].ToString(),
                 Category = ticketDetails.Tables[0].Rows[0]["Category"].ToString(),
-                Status = ticketDetails.Tables[0].Rows[0]["Status"].ToString(),
+                RequestType = ticketDetails.Tables[0].Rows[0]["RequestType"].ToString(),
                 Priority = ticketDetails.Tables[0].Rows[0]["Priority"].ToString(),
+                Status = ticketDetails.Tables[0].Rows[0]["Status"].ToString(),
                 Requester = ticketDetails.Tables[0].Rows[0]["Requester"].ToString(),
+                Organization = ticketDetails.Tables[0].Rows[0]["Organization"].ToString(),
+                Email = ticketDetails.Tables[0].Rows[0]["Email"].ToString(),
+                Role = ticketDetails.Tables[0].Rows[0]["Role"].ToString(),
                 Assigned_QMS = ticketDetails.Tables[0].Rows[0]["Assigned_QMS"].ToString(),
+                Assigned_Programmer = ticketDetails.Tables[0].Rows[0]["Assigned_Programmer"].ToString(),
                 CreatedDate = Convert.ToDateTime(ticketDetails.Tables[0].Rows[0]["CreatedDate"]).ToString("MMMM dd, yyy hh:mm:ss tt"),
                 CreatedBy = ticketDetails.Tables[0].Rows[0]["CreatedBy"].ToString(),
             };
