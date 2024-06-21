@@ -69,7 +69,7 @@ namespace IssueTracker.SystemServices
             }
         }
 
-        public static DataSet GetData(string strCommand)
+        public static DataSet GetData(string strCommand, CommandType cmdType)
         {
             var getConn = GetConnection().GetSection("ConnectionStrings").GetSection("MSSQLSERVER2023").Value;
             SqlConnection cnn = new(getConn);

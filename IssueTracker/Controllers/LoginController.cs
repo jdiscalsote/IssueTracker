@@ -10,14 +10,12 @@ namespace IssueTracker.Controllers
 {
     public class LoginController : Controller
     {
-
         //Set SQL DB Connection
         public IConfigurationRoot GetConnection()
         {
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
             return builder;
         }
-
 
         public IActionResult Index()
         {
@@ -57,33 +55,40 @@ namespace IssueTracker.Controllers
                 using (SqlCommand cmd = new("sp_UserLogin", conn))
                 {
                     conn.Open();
-
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    SqlParameter accessCodeParam = new("@strAccessCode", SqlDbType.VarChar, 50)
-                    {
-                        Value = userNam,
-                        Direction = ParameterDirection.Input
-                    };
-                    cmd.Parameters.Add(accessCodeParam);
+                    cmd.Parameters.Add(new SqlParameter("@strAccessCode", SqlDbType.NVarChar, 255) { Value = userNam });
+                    cmd.Parameters.Add(new SqlParameter("@strPassword", SqlDbType.NVarChar, 255) { Value = userPass });
 
-                    SqlParameter passwordParam = new("@strPassword", SqlDbType.VarChar, 50)
+                    SqlParameter roleIdParam = new("@RoleId", SqlDbType.Int)
                     {
-                        Value = userPass,  
-                        Direction = ParameterDirection.Input
-                    };                   
-                    cmd.Parameters.Add(passwordParam);
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(roleIdParam);
+
+                    SqlParameter statusParam = new("@status", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.ReturnValue
+                    };
+                    cmd.Parameters.Add(statusParam);
+
+                    cmd.ExecuteNonQuery();
+
+                    int status = (int)cmd.Parameters["@status"].Value;
+                    int? roleId = cmd.Parameters["@RoleId"].Value as int?;
 
                     HttpContext.Session.SetString("AccessCode", userNam);
 
-                    int status;
-
-                    status = cmd.ExecuteScalar() as int? ?? 0;
                     ViewBag.Status = status;
 
                     if (status == 1)
                     {
                         ViewBag.Alert = AlertServices.ShowAlert(Alerts.Success, "Login Success!");
+
+                        if (roleId.HasValue)
+                        {
+                            HttpContext.Session.SetInt32("RoleId", roleId.Value);
+                        }
                     }
                     else
                     {
@@ -102,10 +107,10 @@ namespace IssueTracker.Controllers
                 ViewBag.Alert = AlertServices.ShowAlert(Alerts.Danger, "An error occurred. Please try again later.");
                 return PartialView("Index");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Handle other exceptions here
-                ViewBag.Alert = AlertServices.ShowAlert(Alerts.Danger, "An error occurred. Please try again later.");
+                ViewBag.Alert = AlertServices.ShowAlert(Alerts.Danger, "An error occurred: " + ex.Message);
                 return PartialView("Index");
             }
         }

@@ -57,16 +57,18 @@
 
         .btnConfirm {
             color: #111;
-            padding: 12px;
+            padding: 10px;
             width: 100%;
-            font-size: 22px;
-            border: none;
+            font-size: 20px;
+            border: solid #364764 1px;
+            border-radius: 10px;
             background: none;
             -webkit-transition: 0.2s;
             transition: 0.2s;
         }
         .btnConfirm:hover {
-            color: #c84747;
+            color: #fff;
+            background-color: #364764;
             -webkit-transition: 0.3s ease-out;
             transition: 0.3s ease-out;
         }
@@ -83,16 +85,6 @@
         }
         .form-group input {
             padding: 10px;
-        }
-
-        .login-footer {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .login-footer-item {
-            flex: 1 100px;
-            padding: 10px;
-            text-align: center;
         }
 
         .alert {
@@ -141,14 +133,14 @@
 
     <div class="mainDev">
         <div class="container-login">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm" style="border-radius: 30px">
                 <div class="card-body">
                     <div class="container">
                         <div class="login-header p-2">
                             <div class="login-logo">
-                                <img src="~/lib/img/login-logo.jpg" class="figure-img" width="130" />
+                                <img src="~/lib/img/IssueTracker-logo.png" style="border-radius: 5px" class="figure-img" width="160" />
                             </div>
-                            <label class="sysTitle">IssueTracker System</label>
+                            <label class="sysTitle">Issue Tracker System</label>
                         </div>
 
                         <form asp-action="Validate" asp-controller="Login" method="post">
@@ -166,20 +158,10 @@
                                 <a href="" class="text-small" style="color: #115272; text-decoration: none">Forgot password?</a>
                             </div>
 
-                            <div class="col-md-12" style="text-align:center">
-                                <button type="submit" class="btnConfirm">Secure Login &nbsp; <i class="fa fa-arrow-right small"></i></button>
+                            <div class="container" style="text-align:center">
+                                <button type="submit" class="btnConfirm">Secure Login &nbsp; <i class="fa fa-lock small"></i></button>
                             </div>
                         </form>
-
-                        <div class="login-footer">                            
-                            <div class="login-footer-item"><hr /></div>
-                            <div class="login-footer-item">or</div>
-                            <div class="login-footer-item"><hr /></div>
-                        </div>
-
-                        <div class="text-center">
-                            <a href="/Dashboard/Dashboard" class="nav-link text-black">Login with System Admin?</a>
-                        </div>
                     </div>
                 </div>
             </div>

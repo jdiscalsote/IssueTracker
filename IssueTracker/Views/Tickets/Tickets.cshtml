@@ -1,6 +1,6 @@
 ﻿@model IssueTracker.Models.TicketsModel
 @{
-    ViewBag.Name = TempData["AccessCode"] as string;
+    ViewBag.Name = TempData["RoleName"] as string;
     ViewBag.Title = "Tickets";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
@@ -100,50 +100,49 @@
 </div>
 <!-- End Header -->
 
+<!-- Filter -->
+<div class="divFilter d-flex justify-content-start pt-3 pb-5">
+    <div class="form-group">
+        <label></label>
+        <div class="form-group has-search pt-2 mt-1">
+            <span class="fa fa-search form-control-feedback"></span>
+            <input type="text" class="form-control shadow-sm" placeholder="Search" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Priority</label>
+        <div class="d-flex flex-row justify-content-end">
+            <div id="myButtonGroup" class="btn-group">
+                @foreach (var item in Model.Button_Value)
+                {
+                    if (item == Model.Button_Value.First())
+                    {
+                        <button class="btn active" value="@item.Id">@item.Value</button>
+                    }
+                    else
+                    {
+                        <button class="btn" value="@item.Id">@item.Value</button>
+                    }
+                }
+            </div>
+            @Html.HiddenFor(Model => Model.SelectedValue)
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Created on</label>
+        <div class="d-flex justify-content-between gap-2">
+            <input type="date" class="form-control" />
+            <input type="date" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group"></div>
+</div>
+<!-- End Filter -->
+
 <!-- Tickets Table -->
 <form asp-action="Tickets" asp-controller="Tickets" method="post" name="frmPaging">
-    <!-- Filter -->
-    <div class="divFilter d-flex justify-content-start pt-3 pb-5">
-        <div class="form-group">
-            <label></label>
-            <div class="form-group has-search pt-2 mt-1">
-                <span class="fa fa-search form-control-feedback"></span>
-                <input type="text" class="form-control shadow-sm" placeholder="Search" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Priority</label>
-            <div class="d-flex flex-row justify-content-end">
-                <div id="myButtonGroup" class="btn-group">
-                    @foreach (var item in Model.Button_Value)
-                    {
-                        if (item == Model.Button_Value.First())
-                        {
-                            <button class="btn active" value="@item.Id">@item.Value</button>
-                        }
-                        else
-                        {
-                            <button class="btn" value="@item.Id">@item.Value</button>
-                        }
-                    }
-                </div>
-                @Html.HiddenFor(Model => Model.SelectedValue)
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Created on</label>
-            <div class="d-flex justify-content-between gap-2">
-                <input type="date" class="form-control" />
-                <input type="date" class="form-control" />
-            </div>
-        </div>
-        <div class="form-group"></div>
-    </div>
-    <!-- End Filter -->
-
-
     <div class="table-responsive">
-        <label class="form-control-plaintext small" value="">@Html.Label(Model.TotalRecords)</label>
+        <label class="form-control-plaintext" style="font-size: 12px">@Html.Label(Model.TotalRecords)</label>
         <table class="table table-hover table-bordered">
             <thead>
                 <tr>
@@ -157,16 +156,16 @@
                         @Html.DisplayNameFor(modelTitle => modelTitle.Category)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(modelTitle => modelTitle.Status)
+                        @Html.DisplayNameFor(modelTitle => modelTitle.RequestType)
                     </th>
                     <th>
                         @Html.DisplayNameFor(modelTitle => modelTitle.Priority)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(modelTitle => modelTitle.Requester)
+                        @Html.DisplayNameFor(modelTitle => modelTitle.Status)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(modelTitle => modelTitle.Assigned_QMS)
+                        @Html.DisplayNameFor(modelTitle => modelTitle.Requester)
                     </th>
                     <th>
                         @Html.DisplayNameFor(modelTitle => modelTitle.CreatedDate)
@@ -183,25 +182,25 @@
                         <td style="width: 8%; text-align: center">
                             @Html.ActionLink(item.TicketID, "TicketDetails", "TicketDetails", new { ID = item.TicketID }, new { @class = "reqstBtn" })
                         </td>
-                        <td>
+                        <td style="width: 40%">
                             @Html.DisplayFor(modelItem => item.Subject)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Category)
                         </td>
-                        <td style="text-align: center">
-                            @Html.DisplayFor(modelItem => item.Status)
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RequestType)
                         </td>
-                        <td style="text-align: center">
+                        <td>
                             @Html.DisplayFor(modelItem => item.Priority)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Requester)
                         </td>
-                         <td>
-                            @Html.DisplayFor(modelItem => item.Assigned_QMS)
-                        </td>
-                        <td class="tdCreatedDate" style="width: 8%; text-align: center">
+                        <td class="tdCreatedDate">
                             @Html.DisplayFor(modelItem => item.CreatedDate)
                         </td>
                         <td style="text-align: center">
@@ -211,30 +210,6 @@
                 }
             </tbody>
         </table>
-        @*<label class="small" style="text-align: right; float: right; padding: 10px;">@Html.Label(Model.CurrentPage)</label>*@
     </div>
-
-    <!-- Pagination -->
-@*    <div class="pagination-ys justify-content-center">
-        <table>
-            <tr>
-                @for (int i = 1; i <= Model.PageCount; i++)
-                {
-                    <td>
-                        @if (i != Model.CurrentPageIndex)
-                        {
-                            <a href="javascript:PagerClick(@i);" class="shadow-sm">@i</a>
-                        }
-                        else
-                        {
-                            <span class="shadow-sm">@i</span>
-                        }
-                    </td>
-                }
-            </tr>
-        </table>
-    </div>*@
-    <!-- End Pagination -->
-    @*<input type="hidden" id="hfCurrentPageIndex" name="currentPageIndex" />*@
 </form>
 <!-- End Tickets Table -->

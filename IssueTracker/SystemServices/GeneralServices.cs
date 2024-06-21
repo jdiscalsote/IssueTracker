@@ -5,6 +5,17 @@ namespace IssueTracker.SystemServices
 {
     public class GeneralServices
     {
+        //Get User Role Name [Global]
+        public DataSet GetRoleName(int roleID)
+        {
+            SqlParameter[] myparams = new SqlParameter[]
+            {
+                new SqlParameter("@roleID", roleID)
+            };
+
+            return DBHelper.ExecuteParamerizedReader("sp_GetUserRoleName", CommandType.StoredProcedure, myparams);
+        }
+
         //Get Priority Count - Chart [Dashboard]
         public DataSet GetPriorityCounts(string strParamName)
         {
@@ -17,34 +28,30 @@ namespace IssueTracker.SystemServices
         }
 
         //Get Open Tickets List [Dashboard]
-        public DataSet GetOpenTickets(string strCreatedBy)
+        public DataSet GetOpenTickets(string strCreatedBy, int roleId)
         {
             SqlParameter[] myparams = new SqlParameter[]
             {
-                new SqlParameter("@strCreatedBy", strCreatedBy)
+                new SqlParameter("@strCreatedBy", strCreatedBy),
+                new SqlParameter("@strParamName", roleId)
             };
 
             return DBHelper.ExecuteParamerizedReader("sp_GetOpenTickets", CommandType.StoredProcedure, myparams);
         }
 
-        //Get Tickets List where created by [Tickets]
-        public DataSet GetTicketsbyCreatedBy(string strCreatedBy)
+        //Get Tickets List [Tickets]
+        public DataSet GetTicketList()
         {
-            SqlParameter[] myparams = new SqlParameter[]
-            {
-                new SqlParameter("@strCreatedBy", strCreatedBy)
-            };
 
-            return DBHelper.ExecuteParamerizedReader("sp_GetTicketList", CommandType.StoredProcedure, myparams);
+            return DBHelper.GetData("sp_GetTicketList", CommandType.StoredProcedure);
         }
 
         //Get Ticket Details [Ticket Details]
-        public DataSet GetTicketDetails(string strTicketID, string strCreatedBy)
+        public DataSet GetTicketDetails(string strTicketID)
         {
             SqlParameter[] myparams = new SqlParameter[]
             {
-                new SqlParameter("@strTicketID", strTicketID),
-                new SqlParameter("@strCreatedBy", strCreatedBy)
+                new SqlParameter("@strTicketID", strTicketID)
             };
 
             return DBHelper.ExecuteParamerizedReader("sp_GetTicketDetails", CommandType.StoredProcedure, myparams);

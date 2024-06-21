@@ -14,7 +14,11 @@ namespace IssueTracker.Controllers
         //Set SQL DB Connection
         public IConfigurationRoot GetConnection()
         {
-            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
+            var builder = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+
             return builder;
         }
 
@@ -25,12 +29,22 @@ namespace IssueTracker.Controllers
 
         public IActionResult Tickets()
         {
-            TempData["AccessCode"] = HttpContext.Session.GetString("AccessCode");
+            int? roleId = HttpContext.Session.GetInt32("RoleId");
+
+            if (roleId.HasValue)
+            {
+                // Call the GetRoleName method
+                DataSet dsRoleName = GetRoleName(roleId.Value);
+                if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
+                {
+                    string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
+                    ViewBag.RoleName = roleName;
+                }
+            }
 
             TicketsModel ticketsModel = new();
 
             return View(GetListPage(ticketsModel));
-
         }
 
         [HttpPost]
@@ -40,80 +54,72 @@ namespace IssueTracker.Controllers
             return View(GetListPage(ticketsModel));
         }
 
-        private TicketsModel GetListPage(TicketsModel priorityCD)
+        private TicketsModel GetListPage(TicketsModel ticketsModel)
         {
-            if (string.IsNullOrEmpty(priorityCD.SelectedValue)) //Get all request list (Default: Onload) 
+            if (string.IsNullOrEmpty(ticketsModel.SelectedValue))
             {
-                var value = HttpContext.Session.GetString("AccessCode");
-                DataSet tableList = requestServices.GetTicketsbyCreatedBy(value);
-                TicketsModel ticketsModel = new();
+                DataSet tableList = requestServices.GetTicketList();
+                TicketsModel resultModel = new();
 
                 if (tableList.Tables.Count > 0 && tableList.Tables[0].Rows.Count > 0)
                 {
-                    ticketsModel.TicketList = new List<TicketsModelObject>();
+                    resultModel.TicketList = new List<TicketsModelObject>();
                     foreach (DataRow row in tableList.Tables[0].Rows)
                     {
-                        ticketsModel.TicketList.Add(new TicketsModelObject
+                        resultModel.TicketList.Add(new TicketsModelObject
                         {
                             TicketID = row["TicketID"].ToString(),
                             Subject = row["Subject"].ToString(),
                             Category = row["Category"].ToString(),
-                            Status = row["Status"].ToString(),
+                            RequestType = row["RequestType"].ToString(),
                             Priority = row["Priority"].ToString(),
+                            Status = row["Status"].ToString(),
                             Requester = row["Requester"].ToString(),
-                            Assigned_QMS = row["Assigned_QMS"].ToString(),
                             CreatedDate = Convert.ToDateTime(row["CreatedDate"])
                         });
-
-                        ticketsModel.TotalRecords = "1 to 10 of " + tableList.Tables[0].Rows.Count.ToString() + " records";
                     }
 
-                    ticketsModel.Button_Value = GetButtonValue();
+                    resultModel.TotalRecords = $"1 to 10 of {tableList.Tables[0].Rows.Count} records";
+                    resultModel.Button_Value = GetButtonValue();
 
-                    return ticketsModel;
+                    return resultModel;
                 }
-                else { return null; }
+                else 
+                { 
+                    return null; 
+                }
             }
             else 
             {
-                var value = HttpContext.Session.GetString("AccessCode");
-                DataSet tableList = requestServices.GetTicketsbyCreatedBy(value);
-                TicketsModel ticketsModel = new();
-
-                if (tableList.Tables.Count > 0 && tableList.Tables[0].Rows.Count > 0)
-                {
-                    ticketsModel.TicketList = new List<TicketsModelObject>();
-                    foreach (DataRow row in tableList.Tables[0].Rows)
-                    {
-                        ticketsModel.TicketList.Add(new TicketsModelObject
-                        {
-                            TicketID = row["TicketID"].ToString(),
-                            Subject = row["Subject"].ToString(),
-                            Category = row["Category"].ToString(),
-                            Status = row["Status"].ToString(),
-                            Priority = row["Priority"].ToString(),
-                            Requester = row["Requester"].ToString(),
-                            CreatedBy = row["CreatedBy"].ToString(),
-                            Assigned_QMS = row["Assigned_QMS"].ToString()
-                        });
-                    }
-
-                    ticketsModel.Button_Value = GetButtonValue();
-
-                    return ticketsModel;
-                }
-                else { return null; }
+                return null;
             }
+        }
+
+        public DataSet GetRoleName(int roleId)
+        {
+            DataSet dsRoleName = requestServices.GetRoleName(roleId);
+
+            if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
+            {
+                string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
+                TempData["RoleName"] = roleName;
+                return dsRoleName;
+            }
+
+            return null;
         }
 
         private List<ButtonValue> GetButtonValue()
         {
             var getConn = GetConnection().GetSection("ConnectionStrings").GetSection("MSSQLSERVER2023").Value;
             SqlConnection conn = new(getConn);
-            SqlCommand cmd = new("select paramcode, paramsubname from dbo.ParameterSub where ParamID = 3 and Status = 1 order by paramcode", conn);
+            SqlCommand cmd = new("Select paramcode, paramsubname " +
+                                "From dbo.ParameterSub " +
+                                "Where ParamID = 3 and Status = 1 " +
+                                "Order By paramcode", conn);
             conn.Open();
             SqlDataReader odr = cmd.ExecuteReader();
-            List<ButtonValue> prioList = new List<ButtonValue>();
+            List<ButtonValue> prioList = new();
             if (odr.HasRows)
             {
                 while (odr.Read())

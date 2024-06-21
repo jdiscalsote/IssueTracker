@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,24 +10,66 @@ namespace IssueTracker.Controllers
 {
     public class NewTicketController : Controller
     {
+        readonly GeneralServices requestServices;
 
         //Set SQL DB Connection
         public IConfigurationRoot GetConnection()
         {
-            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
+            var builder = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+
             return builder;
+        }
+
+        public NewTicketController(GeneralServices _requestServices)
+        {
+            requestServices = _requestServices;
         }
 
         public IActionResult NewTicket()
         {
+            int? roleId = HttpContext.Session.GetInt32("RoleId");
+
+            if (roleId.HasValue)
+            {
+                // Call the GetRoleName method
+                DataSet dsRoleName = GetRoleName(roleId.Value);
+                if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
+                {
+                    string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
+                    ViewBag.RoleName = roleName;
+                }
+            }
+
             return View(GetListofValue());
+        }
+
+        public DataSet GetRoleName(int roleId)
+        {
+            DataSet dsRoleName = requestServices.GetRoleName(roleId);
+
+            if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
+            {
+                string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
+                TempData["RoleName"] = roleName;
+                return dsRoleName;
+            }
+
+            return null;
         }
 
         private List<CategoryList> GetCategoryList()
         {
-            var getConn = GetConnection().GetSection("ConnectionStrings").GetSection("MSSQLSERVER2023").Value;
+            var getConn = GetConnection()
+                    .GetSection("ConnectionStrings")
+                    .GetSection("MSSQLSERVER2023").Value;
+
             SqlConnection conn = new(getConn);
-            SqlCommand cmd = new("select paramcode, paramsubname from dbo.ParameterSub where ParamID = 1 and Status = 1", conn);
+            SqlCommand cmd = new("Select paramcode, paramsubname " +
+                                "From dbo.ParameterSub " +
+                                "Where ParamID = 1 and Status = 1", conn);
             conn.Open();
             SqlDataReader odr = cmd.ExecuteReader();
             List<CategoryList> categList = new();
@@ -49,9 +90,13 @@ namespace IssueTracker.Controllers
 
         private List<RequestList> GetRequestList()
         {
-            var getConn = GetConnection().GetSection("ConnectionStrings").GetSection("MSSQLSERVER2023").Value;
+            var getConn = GetConnection()
+                .GetSection("ConnectionStrings")
+                .GetSection("MSSQLSERVER2023").Value;
+
             SqlConnection conn = new(getConn);
-            SqlCommand cmd = new("select paramcode, paramsubname from dbo.ParameterSub where ParamID = 2 and Status = 1", conn);
+            SqlCommand cmd = new("Select paramcode, paramsubname From dbo.ParameterSub " +
+                                "Where ParamID = 2 and Status = 1", conn);
             conn.Open();
             SqlDataReader odr = cmd.ExecuteReader();
             List<RequestList> reqList = new();
@@ -72,9 +117,14 @@ namespace IssueTracker.Controllers
 
         private List<RequestPriorityList> GetRequestPriorityList()
         {
-            var getConn = GetConnection().GetSection("ConnectionStrings").GetSection("MSSQLSERVER2023").Value;
+            var getConn = GetConnection()
+                    .GetSection("ConnectionStrings")
+                    .GetSection("MSSQLSERVER2023").Value;
+
             SqlConnection conn = new(getConn);
-            SqlCommand cmd = new("select paramcode, paramsubname from dbo.ParameterSub where ParamID = 3 and Status = 1", conn);
+            SqlCommand cmd = new("Select paramcode, paramsubname " +
+                                "From dbo.ParameterSub " +
+                                "Where ParamID = 3 and Status = 1", conn);
             conn.Open();
             SqlDataReader odr = cmd.ExecuteReader();
             List<RequestPriorityList> prioList = new();
@@ -95,9 +145,13 @@ namespace IssueTracker.Controllers
 
         private List<RequesterList> GetRequesterList()
         {
-            var getConn = GetConnection().GetSection("ConnectionStrings").GetSection("MSSQLSERVER2023").Value;
+            var getConn = GetConnection()
+                    .GetSection("ConnectionStrings")
+                    .GetSection("MSSQLSERVER2023").Value;
+
             SqlConnection conn = new(getConn);
-            SqlCommand cmd = new("select USER_ID, CONCAT(LAST_NAME,', ',FIRST_NAME,' ',MIDDLE_NAME) as Username, ROLE_ID from dbo.UserProfile", conn);
+            SqlCommand cmd = new("Select USER_ID, CONCAT(LAST_NAME,', ',FIRST_NAME,' ',MIDDLE_NAME) as Username, ROLE_ID " +
+                                "From dbo.UserProfile", conn);
             conn.Open();
             SqlDataReader odr = cmd.ExecuteReader();
             List<RequesterList> reqst = new();
@@ -118,9 +172,13 @@ namespace IssueTracker.Controllers
 
         private List<AssigneeQmsList> GetAssigneeQMSList()
         {
-            var getConn = GetConnection().GetSection("ConnectionStrings").GetSection("MSSQLSERVER2023").Value;
+            var getConn = GetConnection()
+                    .GetSection("ConnectionStrings")
+                    .GetSection("MSSQLSERVER2023").Value;
+
             SqlConnection conn = new(getConn);
-            SqlCommand cmd = new("select USER_ID, CONCAT(LAST_NAME,', ',FIRST_NAME,' ',MIDDLE_NAME) as Username from dbo.UserProfile", conn);
+            SqlCommand cmd = new("Select USER_ID, CONCAT(LAST_NAME,', ',FIRST_NAME,' ',MIDDLE_NAME) as Username " +
+                                "From dbo.UserProfile", conn);
             conn.Open();
             SqlDataReader odr = cmd.ExecuteReader();
             List<AssigneeQmsList> qms = new();
@@ -141,9 +199,13 @@ namespace IssueTracker.Controllers
 
         private List<AssigneeProgList> GetAssigneeProgList()
         {
-            var getConn = GetConnection().GetSection("ConnectionStrings").GetSection("MSSQLSERVER2023").Value;
+            var getConn = GetConnection()
+                    .GetSection("ConnectionStrings")
+                    .GetSection("MSSQLSERVER2023").Value;
+
             SqlConnection conn = new(getConn);
-            SqlCommand cmd = new("select USER_ID, CONCAT(LAST_NAME,', ',FIRST_NAME,' ',MIDDLE_NAME) as Username from dbo.UserProfile", conn);
+            SqlCommand cmd = new("Select USER_ID, CONCAT(LAST_NAME,', ',FIRST_NAME,' ',MIDDLE_NAME) as Username " +
+                                "From dbo.UserProfile", conn);
             conn.Open();
             SqlDataReader odr = cmd.ExecuteReader();
             List<AssigneeProgList> prog = new();
@@ -203,35 +265,36 @@ namespace IssueTracker.Controllers
 
         public DataSet FetchUserDetailsFromDatabase(string user_id)
         {
-            var getConn = GetConnection().GetSection("ConnectionStrings").GetSection("MSSQLSERVER2023").Value;
-            using (SqlConnection conn = new SqlConnection(getConn))
+            var getConn = GetConnection()
+                    .GetSection("ConnectionStrings")
+                    .GetSection("MSSQLSERVER2023").Value;
+
+            using SqlConnection conn = new(getConn);
+
+            SqlCommand cmd = new("Select USER_ID, d.DEPARTMENT_DESC, ROLE_ID, EMAIL " +
+                                "From dbo.UserProfile u " +
+                                "Left Join dbo.Department d on u.DEPARTMENT_ID = d.DEPT_ID " +
+                                "Where u.USER_ID = @user_id", conn);
+
+            cmd.Parameters.AddWithValue("@user_id", user_id);
+            var dataSet = new DataSet();
+
+            try
             {
-                SqlCommand cmd = new SqlCommand("select USER_ID, d.DEPARTMENT_DESC, ROLE_ID, EMAIL from dbo.UserProfile u " +
-                                                 "left join dbo.Department d on u.DEPARTMENT_ID = d.DEPT_ID " +
-                                                 "where u.USER_ID = @user_id", conn);
-                cmd.Parameters.AddWithValue("@user_id", user_id);
-
-                var dataSet = new DataSet();
-
-                try
-                {
-                    conn.Open();
-                    using (var adapter = new SqlDataAdapter(cmd))
-                    {
-                        adapter.Fill(dataSet);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                finally
-                {
-                    conn.Close();
-                }
-
-                return dataSet;
+                conn.Open();
+                using var adapter = new SqlDataAdapter(cmd);
+                adapter.Fill(dataSet);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return dataSet;
         }
 
         [HttpPost]
@@ -263,7 +326,7 @@ namespace IssueTracker.Controllers
 
             try
             {
-                DBHelper dbHelper = new DBHelper();
+                DBHelper dbHelper = new();
 
                 dbHelper.CreateNewTicket(newObj); //Call Function, insert into database
                 dbHelper.CreateNewTicketSub(newObj); //Call Function, insert into database

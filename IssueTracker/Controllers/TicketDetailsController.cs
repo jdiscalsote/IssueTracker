@@ -1,16 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Data;
-using System.Linq;
-using System.Reflection;
-using System.Collections.Generic;
+﻿using System.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 
 using IssueTracker.Models;
-using IssueTracker.SystemModels;
 using IssueTracker.SystemServices;
-using Azure.Core;
 
 namespace IssueTracker.Controllers
 {
@@ -21,7 +13,11 @@ namespace IssueTracker.Controllers
         //Set SQL DB Connection
         public IConfigurationRoot GetConnection()
         {
-            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
+            var builder = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+
             return builder;
         }
 
@@ -32,17 +28,28 @@ namespace IssueTracker.Controllers
 
         public IActionResult TicketDetails()
         {
+            int? roleId = HttpContext.Session.GetInt32("RoleId");
+
+            if (roleId.HasValue)
+            {
+                // Call the GetRoleName method
+                DataSet dsRoleName = GetRoleName(roleId.Value);
+                if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
+                {
+                    string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
+                    ViewBag.RoleName = roleName;
+                }
+            }
+
             var ticketId = HttpContext.Request.RouteValues["ID"];
             ViewBag.TicketID = "#" + ticketId;
 
-            var value = HttpContext.Session.GetString("AccessCode");
-
-            return View(Ticket(ticketId.ToString(), value));
+            return View(Ticket(ticketId.ToString()));
         }
 
-        public TicketDetailsModel Ticket(string _ticketID, string _accessCode)
+        public TicketDetailsModel Ticket(string ticketId)
         {
-            DataSet ticketDetails = requestServices.GetTicketDetails(_ticketID, _accessCode);
+            DataSet ticketDetails = requestServices.GetTicketDetails(ticketId);
 
             TicketDetailsModel detailsObj = new()
             {
@@ -63,6 +70,20 @@ namespace IssueTracker.Controllers
             };
 
             return detailsObj;
+        }
+
+        public DataSet GetRoleName(int roleId)
+        {
+            DataSet dsRoleName = requestServices.GetRoleName(roleId);
+
+            if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
+            {
+                string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
+                TempData["RoleName"] = roleName;
+                return dsRoleName;
+            }
+
+            return null;
         }
     }
 }

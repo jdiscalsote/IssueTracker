@@ -1,5 +1,6 @@
 ﻿@model IssueTracker.Models.NewTicketModel
 @{
+    ViewBag.Name = TempData["RoleName"] as string;
     ViewBag.Title = "New Ticket";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }

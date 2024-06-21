@@ -5,7 +5,6 @@ using Microsoft.Data.SqlClient;
 
 using IssueTracker.Models;
 using IssueTracker.SystemServices;
-using Newtonsoft.Json.Linq;
 
 namespace IssueTracker.Controllers
 {
@@ -16,7 +15,11 @@ namespace IssueTracker.Controllers
         //Set SQL DB Connection
         public IConfigurationRoot GetConnection()
         {
-            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
+            var builder = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+
             return builder;
         }
 
@@ -27,7 +30,18 @@ namespace IssueTracker.Controllers
 
         public IActionResult Dashboard()
         {
-            TempData["AccessCode"] = HttpContext.Session.GetString("AccessCode");
+            int? roleId = HttpContext.Session.GetInt32("RoleId");
+
+            if (roleId.HasValue)
+            {
+                // Call the GetRoleName method
+                DataSet dsRoleName = GetRoleName(roleId.Value);
+                if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
+                {
+                    string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
+                    ViewBag.RoleName = roleName;
+                }
+            }
 
             var ticketData = new DashboardModel();
 
@@ -56,8 +70,10 @@ namespace IssueTracker.Controllers
         {
             if (string.IsNullOrEmpty(dashCD.SelectedValue)) //Get open tickets list (Default: Onload) 
             {
-                var value = HttpContext.Session.GetString("AccessCode");
-                DataSet tableList = requestServices.GetOpenTickets(value);
+                var accessCode = HttpContext.Session.GetString("AccessCode");
+                int roleId = (int)HttpContext.Session.GetInt32("RoleId");
+
+                DataSet tableList = requestServices.GetOpenTickets(accessCode, roleId);
                 DashboardModel dashModelList = new();
 
                 if (tableList.Tables.Count > 0 && tableList.Tables[0].Rows.Count > 0)
@@ -84,8 +100,10 @@ namespace IssueTracker.Controllers
             }
             else
             {
-                string value = HttpContext.Session.GetString("AccessCode");
-                DataSet tableList = requestServices.GetOpenTickets(value);
+                string accessCode = HttpContext.Session.GetString("AccessCode");
+                int roleId = (int)HttpContext.Session.GetInt32("RoleId");
+
+                DataSet tableList = requestServices.GetOpenTickets(accessCode, roleId);
                 DashboardModel dashModelList = new();
 
                 if (tableList.Tables.Count > 0 && tableList.Tables[0].Rows.Count > 0)
@@ -112,14 +130,34 @@ namespace IssueTracker.Controllers
             }
         }
 
+        public DataSet GetRoleName(int roleId)
+        {
+            DataSet dsRoleName = requestServices.GetRoleName(roleId);
+
+            if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
+            {
+                string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
+                TempData["RoleName"] = roleName;
+                return dsRoleName;
+            }
+
+            return null;
+        }
+
         private List<GroupButtonValue> GetgroupButtonValue()
         {
-            var getConn = GetConnection().GetSection("ConnectionStrings").GetSection("MSSQLSERVER2023").Value;
+            var getConn = GetConnection()
+                    .GetSection("ConnectionStrings")
+                    .GetSection("MSSQLSERVER2023").Value;
+
             SqlConnection conn = new(getConn);
-            SqlCommand cmd = new("select paramcode, paramsubname from dbo.ParameterSub where ParamID = 5 and Status = 1 order by paramcode", conn);
+            SqlCommand cmd = new("Select paramcode, paramsubname " +
+                                "From dbo.ParameterSub " +
+                                "Where ParamID = 5 and Status = 1 " +
+                                "Order By paramcode", conn);
             conn.Open();
             SqlDataReader odr = cmd.ExecuteReader();
-            List<GroupButtonValue> groupList = new List<GroupButtonValue>();
+            List<GroupButtonValue> groupList = new();
             if (odr.HasRows)
             {
                 while (odr.Read())
@@ -139,10 +177,14 @@ namespace IssueTracker.Controllers
         {
             var getConn = GetConnection().GetSection("ConnectionStrings").GetSection("MSSQLSERVER2023").Value;
             SqlConnection conn = new(getConn);
-            SqlCommand cmd = new("select paramcode, (select count(status) from dbo.Tickets where status = ParamCode) as count, paramsubname from dbo.ParameterSub where ParamID = 4 and Status = 1 order by paramcode", conn);
+            SqlCommand cmd = new("Select paramcode, " +
+                                "(Select Count(status) From dbo.Tickets Where status = ParamCode) as count, paramsubname " +
+                                "From dbo.ParameterSub " +
+                                "Where ParamID = 4 and Status = 1 " +
+                                "Order By paramcode", conn);
             conn.Open();
             SqlDataReader odr = cmd.ExecuteReader();
-            List<DashTicketsTitle> groupList = new List<DashTicketsTitle>();
+            List<DashTicketsTitle> groupList = new();
             if (odr.HasRows)
             {
                 while (odr.Read())
