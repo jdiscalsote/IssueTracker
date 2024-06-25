@@ -49,38 +49,53 @@ namespace IssueTracker.Controllers
 
         public TicketDetailsModel Ticket(string ticketId)
         {
-            DataSet ticketDetails = requestServices.GetTicketDetails(ticketId);
-
-            TicketDetailsModel detailsObj = new()
+            if (ModelState.IsValid)
             {
-                Subject = ticketDetails.Tables[0].Rows[0]["Subject"].ToString(),
-                Description = ticketDetails.Tables[0].Rows[0]["Description"].ToString(),
-                Category = ticketDetails.Tables[0].Rows[0]["Category"].ToString(),
-                RequestType = ticketDetails.Tables[0].Rows[0]["RequestType"].ToString(),
-                Priority = ticketDetails.Tables[0].Rows[0]["Priority"].ToString(),
-                Status = ticketDetails.Tables[0].Rows[0]["Status"].ToString(),
-                Requester = ticketDetails.Tables[0].Rows[0]["Requester"].ToString(),
-                Organization = ticketDetails.Tables[0].Rows[0]["Organization"].ToString(),
-                Email = ticketDetails.Tables[0].Rows[0]["Email"].ToString(),
-                Role = ticketDetails.Tables[0].Rows[0]["Role"].ToString(),
-                Assigned_QMS = ticketDetails.Tables[0].Rows[0]["Assigned_QMS"].ToString(),
-                Assigned_Programmer = ticketDetails.Tables[0].Rows[0]["Assigned_Programmer"].ToString(),
-                CreatedDate = Convert.ToDateTime(ticketDetails.Tables[0].Rows[0]["CreatedDate"]).ToString("MMMM dd, yyy hh:mm:ss tt"),
-                CreatedBy = ticketDetails.Tables[0].Rows[0]["CreatedBy"].ToString(),
-            };
+                DataSet ticketDetails = requestServices.GetTicketDetails(ticketId);
 
-            return detailsObj;
+                if (ticketDetails != null && ticketDetails.Tables.Count > 0 && ticketDetails.Tables[0].Rows.Count > 0)
+                {
+                    TicketDetailsModel detailsObj = new()
+                    {
+                        Subject = ticketDetails.Tables[0].Rows[0]["Subject"].ToString(),
+                        Description = ticketDetails.Tables[0].Rows[0]["Description"].ToString(),
+                        InternalNote = ticketDetails.Tables[0].Rows[0]["InternalNote"].ToString(),
+                        Category = ticketDetails.Tables[0].Rows[0]["Category"].ToString(),
+                        RequestType = ticketDetails.Tables[0].Rows[0]["RequestType"].ToString(),
+                        Priority = ticketDetails.Tables[0].Rows[0]["Priority"].ToString(),
+                        Status = ticketDetails.Tables[0].Rows[0]["Status"].ToString(),
+                        Requester = ticketDetails.Tables[0].Rows[0]["Requester"].ToString(),
+                        Organization = ticketDetails.Tables[0].Rows[0]["Organization"].ToString(),
+                        Email = ticketDetails.Tables[0].Rows[0]["Email"].ToString(),
+                        Role = ticketDetails.Tables[0].Rows[0]["Role"].ToString(),
+                        Assigned_QMS = ticketDetails.Tables[0].Rows[0]["Assigned_QMS"].ToString(),
+                        Assigned_Programmer = ticketDetails.Tables[0].Rows[0]["Assigned_Programmer"].ToString(),
+                        CreatedDate = Convert.ToDateTime(ticketDetails.Tables[0].Rows[0]["CreatedDate"]).ToString("MMMM dd, yyyy hh:mm:ss tt"),
+                        CreatedBy = ticketDetails.Tables[0].Rows[0]["CreatedBy"].ToString(),
+                    };
+
+                    return detailsObj;
+                }
+            }
+
+            return null;
         }
+
 
         public DataSet GetRoleName(int roleId)
         {
-            DataSet dsRoleName = requestServices.GetRoleName(roleId);
-
-            if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
+            if (ModelState.IsValid)
             {
-                string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
-                TempData["RoleName"] = roleName;
-                return dsRoleName;
+                DataSet dsRoleName = requestServices.GetRoleName(roleId);
+
+                if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
+                {
+                    string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
+                    TempData["RoleName"] = roleName;
+                    return dsRoleName;
+                }
+
+                return null;
             }
 
             return null;

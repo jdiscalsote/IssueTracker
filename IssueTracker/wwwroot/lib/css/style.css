@@ -83,3 +83,27 @@ nav .breadcrumb-item.active {
     font-family: 'Code2000-rdLO';
     src: url('../fonts\Code2000-rdLO.ttf') format('truetype');
 }
+
+/* Button's Settings */
+.btnEdit {
+    padding: 8px;
+    width: 20%;
+}
+.btnAddTicket {
+    color: #115272;
+    padding: 8px;
+    width: 10%;
+    float: right;
+    border: solid 1px #115272;
+}
+.btnAddTicket:hover {
+    color: #fff;
+    background-color: #115272;
+}
+.btnAddTicket i {
+    margin-right: 5px;
+}
+
+.btnCreate, .btnCancel {
+    padding: 8px;
+}

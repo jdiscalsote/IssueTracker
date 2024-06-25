@@ -48,13 +48,18 @@ namespace IssueTracker.Controllers
 
         public DataSet GetRoleName(int roleId)
         {
-            DataSet dsRoleName = requestServices.GetRoleName(roleId);
-
-            if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
+            if (ModelState.IsValid)
             {
-                string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
-                TempData["RoleName"] = roleName;
-                return dsRoleName;
+                DataSet dsRoleName = requestServices.GetRoleName(roleId);
+
+                if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
+                {
+                    string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
+                    TempData["RoleName"] = roleName;
+                    return dsRoleName;
+                }
+
+                return null;
             }
 
             return null;
@@ -243,57 +248,66 @@ namespace IssueTracker.Controllers
         [Route("/NewTicket/GetRequesterDetails")]
         public IActionResult GetRequesterDetails(string user_id)
         {
-            // Fetch user details from a database based on user_id
-            var userDetails = FetchUserDetailsFromDatabase(user_id);
-
-            // Check if userDetails has data before accessing it
-            if (userDetails != null && userDetails.Tables.Count > 0 && userDetails.Tables[0].Rows.Count > 0)
+            if (ModelState.IsValid)
             {
-                var userID = userDetails.Tables[0].Rows[0]["USER_ID"].ToString();
-                var deptDesc = userDetails.Tables[0].Rows[0]["DEPARTMENT_DESC"].ToString();
-                var roleID = userDetails.Tables[0].Rows[0]["ROLE_ID"].ToString();
-                var email = userDetails.Tables[0].Rows[0]["EMAIL"].ToString();
+                // Fetch user details from a database based on user_id
+                var userDetails = FetchUserDetailsFromDatabase(user_id);
 
-                // Return the user details as JSON
-                return Ok(new { UserID = userID, DepartmentDesc = deptDesc, RoleID = roleID, Email = email });
+                // Check if userDetails has data before accessing it
+                if (userDetails != null && userDetails.Tables.Count > 0 && userDetails.Tables[0].Rows.Count > 0)
+                {
+                    var userID = userDetails.Tables[0].Rows[0]["USER_ID"].ToString();
+                    var deptDesc = userDetails.Tables[0].Rows[0]["DEPARTMENT_DESC"].ToString();
+                    var roleID = userDetails.Tables[0].Rows[0]["ROLE_ID"].ToString();
+                    var email = userDetails.Tables[0].Rows[0]["EMAIL"].ToString();
+
+                    // Return the user details as JSON
+                    return Ok(new { UserID = userID, DepartmentDesc = deptDesc, RoleID = roleID, Email = email });
+                }
+                else
+                {
+                    return NotFound(); // Return a 404 Not Found if user details are not found
+                }
             }
-            else
-            {
-                return NotFound(); // Return a 404 Not Found if user details are not found
-            }
+            return NotFound();
         }
 
         public DataSet FetchUserDetailsFromDatabase(string user_id)
         {
-            var getConn = GetConnection()
-                    .GetSection("ConnectionStrings")
-                    .GetSection("MSSQLSERVER2023").Value;
-
-            using SqlConnection conn = new(getConn);
-
-            SqlCommand cmd = new("Select USER_ID, d.DEPARTMENT_DESC, ROLE_ID, EMAIL " +
-                                "From dbo.UserProfile u " +
-                                "Left Join dbo.Department d on u.DEPARTMENT_ID = d.DEPT_ID " +
-                                "Where u.USER_ID = @user_id", conn);
-
-            cmd.Parameters.AddWithValue("@user_id", user_id);
             var dataSet = new DataSet();
 
-            try
+            if (ModelState.IsValid)
             {
-                conn.Open();
-                using var adapter = new SqlDataAdapter(cmd);
-                adapter.Fill(dataSet);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            finally
-            {
-                conn.Close();
-            }
+                var getConn = GetConnection()
+                .GetSection("ConnectionStrings")
+                .GetSection("MSSQLSERVER2023").Value;
 
+                using SqlConnection conn = new(getConn);
+
+                SqlCommand cmd = new("Select USER_ID, d.DEPARTMENT_DESC, ROLE_ID, EMAIL " +
+                                    "From dbo.UserProfile u " +
+                                    "Left Join dbo.Department d on u.DEPARTMENT_ID = d.DEPT_ID " +
+                                    "Where u.USER_ID = @user_id", conn);
+
+                cmd.Parameters.AddWithValue("@user_id", user_id);
+
+                try
+                {
+                    conn.Open();
+                    using var adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dataSet);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                finally
+                {
+                    conn.Close();
+                }
+
+                return dataSet;
+            }
             return dataSet;
         }
 

@@ -123,7 +123,7 @@ namespace IssueTracker.SystemServices
             finally
             {
                 cnn.Close();
-            }
+            } 
         }
 
         public static DataSet ExecuteParamerizedReader(string CommandName, CommandType CmdType, SqlParameter[] param)

@@ -18,121 +18,126 @@
     }
 </style>
 
-<div class="d-flex justify-content-between">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item active" aria-current="page">Tickets</li>
-            <li class="breadcrumb-item" aria-current="page">Ticket Details</li>
-        </ol>
+<div class="container-fluid">
+    <!-- Header -->
+    <h3>Ticket Details</h3>
+    <nav class="d-flex justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page">Menu</li>
+                <li class="breadcrumb-item" aria-current="page">Tickets</li>
+                <li class="breadcrumb-item active" aria-current="page">Ticket Details</li>
+            </ol>
+        </nav>
+        <a class="nav-link btn-sm float-right backButton" href="/Tickets/Tickets"><i class="fa fa-arrow-left"></i>&nbsp;Back</a>
     </nav>
-    <a class="nav-link btn-sm float-right backButton" href="/Tickets/Tickets"><i class="fa fa-arrow-left"></i>&nbsp;Back</a>
-</div>
+    <!-- End Header -->
 
-<!-- Ticket Details Header -->
-<div class="card shadow-sm">
-    <div class="card-body">        
-        <div class="row d-flex justify-content-center">
-            <div class="col-md">
-                <h3 class="mt-3">@ViewBag.TicketID</h3>
-            </div>
-
-            <div class="col-md">
-                <label class="fw-bold">Created Date</label>
-                @Html.LabelForModel(Model.CreatedDate, new { @class = "form-control-plaintext" })
-            </div>
-
-            <div class="col-md">
-                <label class="fw-bold">Created By</label>
-                @Html.LabelForModel(Model.CreatedBy, new { @class = "form-control-plaintext" })
+    <!-- Ticket Details Header -->
+    <div class="card shadow-sm mt-5 mb-3">
+        <div class="card-body">
+            <div class="row d-flex justify-content-center">
+                <div class="col-sm col-md col-lg">
+                    <label class="fw-bold">Ticket Number</label>
+                    <h1 class="form-control-plaintext">@ViewBag.TicketID</h1>
+                </div>
+                <div class="col-sm col-md col-lg">
+                    <label class="fw-bold">Created By</label>
+                    @Html.LabelForModel(Model.CreatedBy, new { @class = "form-control-plaintext" })
+                </div>
+                <div class="col-sm col-md col-lg">
+                    <label class="fw-bold">Created Date</label>
+                    @Html.LabelForModel(Model.CreatedDate, new { @class = "form-control-plaintext" })
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!-- End Ticket Details Header -->
+    <!-- End Ticket Details Header -->
 
-<div class="card shadow mt-4">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-5 mb-5" style="border-right: 1px solid #dadfe3">
-                <div class="m-3">
-                    <!-- Nav tabs -->
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-bs-toggle="tab" href="#Requester">Requester</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#Ticket">Ticket</a>
-                        </li>
-                    </ul>
-                    <!-- Tab panes -->
-                    <div class="tab-content mt-3">
-                        <div class="tab-pane active" id="Requester">
-                            <div class="form-group">
-                                <label class="mb-2">Requester</label> <br />
-                                @Html.TextBoxFor(Model => Model.Requester, new { @class = "form-control", @readonly = "true" })
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-5 mb-5" style="border-right: 1px solid #dadfe3">
+                    <div class="m-3">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#Requester">Requester</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#Ticket">Ticket</a>
+                            </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content mt-3">
+                            <div class="tab-pane active" id="Requester">
+                                <div class="form-group">
+                                    <label class="mb-2">Requester</label> <br />
+                                    @Html.TextBoxFor(Model => Model.Requester, new { @class = "form-control", @readonly = "true" })
+                                </div>
+
+                                <div class="form-group mt-3">
+                                    <label class="mb-2">Organization</label>
+                                    @Html.TextBoxFor(Model => Model.Organization, new { @class = "form-control", @readonly = "true" })
+                                </div>
+
+                                <div class="form-group mt-3">
+                                    <label class="mb-2">Email</label>
+                                    @Html.TextBoxFor(Model => Model.Email, new { @class = "form-control", @readonly = "true" })
+                                </div>
+
+                                <div class="form-group mt-3">
+                                    <label class="mb-2">Role</label>
+                                    @Html.TextBoxFor(Model => Model.Role, new { @class = "form-control", @readonly = "true" })
+                                </div>
                             </div>
 
-                            <div class="form-group mt-3">
-                                <label class="mb-2">Organization</label>
-                                @Html.TextBoxFor(Model => Model.Organization, new { @class = "form-control", @readonly = "true" })
-                            </div>
+                            <div class="tab-pane fade" id="Ticket">
+                                <div class="form-group">
+                                    <label class="mb-2">Category</label> <br />
+                                    @Html.TextBoxFor(Model => Model.Category, new { @class = "form-control", @readonly = "true" })
+                                </div>
 
-                            <div class="form-group mt-3">
-                                <label class="mb-2">Email</label>
-                                @Html.TextBoxFor(Model => Model.Email, new { @class = "form-control", @readonly = "true" })
-                            </div>
+                                <div class="form-group mt-3">
+                                    <label class="mb-2">Request Type</label> <br />
+                                    @Html.TextBoxFor(Model => Model.RequestType, new { @class = "form-control", @readonly = "true" })
+                                </div>
 
-                            <div class="form-group mt-3">
-                                <label class="mb-2">Role</label>
-                                @Html.TextBoxFor(Model => Model.Role, new { @class = "form-control", @readonly = "true" })
-                            </div>
-                        </div>
+                                <div class="form-group mt-3">
+                                    <label class="mb-2">Priority</label> <br />
+                                    @Html.TextBoxFor(Model => Model.Priority, new { @class = "form-control", @readonly = "true" })
+                                </div>
 
-                        <div class="tab-pane container fade" id="Ticket">
-                            <div class="form-group">
-                                <label class="mb-2">Category</label> <br />
-                                @Html.TextBoxFor(Model => Model.Category, new { @class = "form-control", @readonly = "true" })
-                            </div>
+                                <div class="form-group mt-3">
+                                    <label class="mb-2">Assignee QMS</label> <br />
+                                    @Html.TextBoxFor(Model => Model.Assigned_QMS, new { @class = "form-control", @readonly = "true" })
+                                </div>
 
-                            <div class="form-group mt-3">
-                                <label class="mb-2">Request Type</label> <br />
-                                @Html.TextBoxFor(Model => Model.RequestType, new { @class = "form-control", @readonly = "true" })
-                            </div>
-
-                            <div class="form-group mt-3">
-                                <label class="mb-2">Priority</label> <br />
-                                @Html.TextBoxFor(Model => Model.Priority, new { @class = "form-control", @readonly = "true" })
-                            </div>
-
-                            <div class="form-group mt-3">
-                                <label class="mb-2">Assignee QMS</label> <br />
-                                @Html.TextBoxFor(Model => Model.Assigned_QMS, new { @class = "form-control", @readonly = "true" })
-                            </div>
-
-                            <div class="form-group mt-3">
-                                <label class="mb-2">Assignee Programmer</label> <br />
-                                @Html.TextBoxFor(Model => Model.Assigned_Programmer, new { @class = "form-control", @readonly = "true" })
+                                <div class="form-group mt-3">
+                                    <label class="mb-2">Assignee Programmer</label> <br />
+                                    @Html.TextBoxFor(Model => Model.Assigned_Programmer, new { @class = "form-control", @readonly = "true" })
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-md-7">
-                <div class="m-3">
-                    <div class="form-group">
-                        <label class="mb-2">Subject</label>
-                        @Html.TextBoxFor(Model => Model.Subject, new { @class = "form-control", @readonly = "true" })
-                    </div>
+                <div class="col-md-7">
+                    <div class="m-3">
+                        <div class="form-group">
+                            <label class="mb-2">Subject</label>
+                            @Html.TextBoxFor(Model => Model.Subject, new { @class = "form-control", @readonly = "true" })
+                        </div>
 
-                    <div class="form-group mt-3">
-                        <label class="mb-2">Description</label>
-                        @Html.TextAreaFor(Model => Model.Description, new { @rows = 5, @class = "form-control", style="border-radius: 5px", @readonly = "true" })
-                    </div>
+                        <div class="form-group mt-3">
+                            <label class="mb-2">Description</label>
+                            @Html.TextAreaFor(Model => Model.Description, new { @rows = 5, @class = "form-control", style="border-radius: 5px", @readonly = "true" })
+                        </div>
 
-                    <div class="form-group mt-3">
-                        <label class="mb-2">Internel Note <span class="text-muted">(optional)</span></label>
-                        @Html.TextAreaFor(Model => Model.InternalNote, new { @rows = 5, @class = "form-control", style="border-radius: 5px", @readonly = "true" })
+                        <div class="form-group mt-3">
+                            <label class="mb-2">Internel Note <span class="text-muted">(optional)</span></label>
+                            @Html.TextAreaFor(Model => Model.InternalNote, new { @rows = 5, @class = "form-control", style="border-radius: 5px", @readonly = "true" })
+                        </div>
                     </div>
                 </div>
             </div>

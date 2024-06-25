@@ -1,0 +1,116 @@
+﻿@model IssueTracker.Models.AccountModel
+@{
+    ViewBag.Name = TempData["RoleName"] as string;
+    ViewBag.Title = "Account";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<style>
+    .form-group {
+        padding: 10px;
+    }
+    .form-group button i {
+        margin-right: 10px;
+    }
+    .form-control:disabled {
+        background-color: #fff;
+    }
+    .form-control:disabled:hover {
+        cursor: not-allowed;
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Header -->
+    <h3>Account Settings</h3>
+    <nav class="d-flex justify-content-between">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page">Setttings</li>
+                <li class="breadcrumb-item active" aria-current="page">Account</li>
+            </ol>
+        </nav>
+    </nav>
+    <!-- End Header -->
+
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <h5>Account Information</h5>
+
+            <div class="row">
+                <div class="col-sm-6 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="text-black mb-1">Employee No.</label>
+                        <input type="text" class="form-control" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label class="text-black mb-1">First Name</label>
+                        <input type="text" class="form-control" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label class="text-black mb-1">Middle Name</label>
+                        <input type="text" class="form-control" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label class="text-black mb-1">Last Name</label>
+                        <input type="text" class="form-control" disabled />
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-6 col-lg-6">
+                    <div class="form-group">
+                        <label class="text-black mb-1">User Role</label>
+                        <input type="text" class="form-control" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label class="text-black mb-1">Email</label>
+                        <input type="text" class="form-control" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label class="text-black mb-1">Department</label>
+                        <input type="text" class="form-control" disabled />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <h5>Security</h5>
+
+            <div class="row">
+                <div class="col-sm-6 col col-lg-6">
+                    <div class="form-group">
+                        <label class="text-black mb-1">Access Code</label>
+                        <input type="text" class="form-control" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label class="text-black mb-1">Password</label>
+                        <input type="password" class="form-control" disabled />
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="row">
+                <div class="col-sm-6 col-md-6 col-lg-6">
+                    <h6 class="p-2">Change Password</h6>
+
+                    <div class="form-group">
+                        <label class="text-black mb-1">New Password</label>
+                        <input type="password" class="form-control" placeholder="Enter new password" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="text-black mb-1">Confirm Password</label>
+                        <input type="password" class="form-control" placeholder="Re-enter new password" required />
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-outline-success btnEdit"><i class="fa fa-edit"></i>Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

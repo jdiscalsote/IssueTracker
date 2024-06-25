@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 
 using IssueTracker.Models;
 using IssueTracker.SystemServices;
+using IssueTracker.SystemModels;
 
 namespace IssueTracker.Controllers
 {
@@ -51,6 +52,12 @@ namespace IssueTracker.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Tickets([FromForm] TicketsModel ticketsModel)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Alert = AlertServices.ShowAlert(Alerts.Warning, "Invalid data. Please correct the errors and try again.");
+                return View("Tickets", ticketsModel);
+            }
+
             return View(GetListPage(ticketsModel));
         }
 
@@ -97,13 +104,18 @@ namespace IssueTracker.Controllers
 
         public DataSet GetRoleName(int roleId)
         {
-            DataSet dsRoleName = requestServices.GetRoleName(roleId);
-
-            if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
+            if (ModelState.IsValid)
             {
-                string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
-                TempData["RoleName"] = roleName;
-                return dsRoleName;
+                DataSet dsRoleName = requestServices.GetRoleName(roleId);
+
+                if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
+                {
+                    string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
+                    TempData["RoleName"] = roleName;
+                    return dsRoleName;
+                }
+
+                return null;
             }
 
             return null;
@@ -111,7 +123,9 @@ namespace IssueTracker.Controllers
 
         private List<ButtonValue> GetButtonValue()
         {
-            var getConn = GetConnection().GetSection("ConnectionStrings").GetSection("MSSQLSERVER2023").Value;
+            var getConn = GetConnection()
+                    .GetSection("ConnectionStrings")
+                    .GetSection("MSSQLSERVER2023").Value;
             SqlConnection conn = new(getConn);
             SqlCommand cmd = new("Select paramcode, paramsubname " +
                                 "From dbo.ParameterSub " +

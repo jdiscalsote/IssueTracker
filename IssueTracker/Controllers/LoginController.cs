@@ -26,6 +26,12 @@ namespace IssueTracker.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Validate([FromForm] LoginModel collection)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Alert = AlertServices.ShowAlert(Alerts.Warning, "Invalid data. Please correct the errors and try again.");
+                return PartialView("Index");
+            }
+
             string userNam = collection.AccessCode;
             string userPass = collection.Password;
 
