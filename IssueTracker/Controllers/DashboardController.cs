@@ -73,7 +73,6 @@ namespace IssueTracker.Controllers
             return View(GetListPage(dashModel));
         }
 
-
         private DashboardModel GetListPage(DashboardModel dashCD)
         {
             if (string.IsNullOrEmpty(dashCD.SelectedValue)) //Get open tickets list (Default: Onload) 

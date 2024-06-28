@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using IssueTracker.Models;
 using IssueTracker.SystemModels;
 using IssueTracker.SystemServices;
+using Microsoft.AspNetCore.Identity;
 
 namespace IssueTracker.Controllers
 {
@@ -32,16 +33,16 @@ namespace IssueTracker.Controllers
                 return PartialView("Index");
             }
 
-            string userNam = collection.AccessCode;
+            string accessCode = collection.AccessCode;
             string userPass = collection.Password;
 
-            if (string.IsNullOrEmpty(userNam) && string.IsNullOrEmpty(userPass))
+            if (string.IsNullOrEmpty(accessCode) && string.IsNullOrEmpty(userPass))
             {
                 ViewBag.Alert = AlertServices.ShowAlert(Alerts.Warning, "Input username and password");
                 return PartialView("Index");
             }
 
-            if (string.IsNullOrEmpty(userNam))
+            if (string.IsNullOrEmpty(accessCode))
             {
                 ViewBag.Alert = AlertServices.ShowAlert(Alerts.Warning, "Please input your username.");
                 return PartialView("Index");
@@ -63,7 +64,7 @@ namespace IssueTracker.Controllers
                     conn.Open();
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.Add(new SqlParameter("@strAccessCode", SqlDbType.NVarChar, 255) { Value = userNam });
+                    cmd.Parameters.Add(new SqlParameter("@strAccessCode", SqlDbType.NVarChar, 255) { Value = accessCode });
                     cmd.Parameters.Add(new SqlParameter("@strPassword", SqlDbType.NVarChar, 255) { Value = userPass });
 
                     SqlParameter roleIdParam = new("@RoleId", SqlDbType.Int)
@@ -83,18 +84,19 @@ namespace IssueTracker.Controllers
                     int status = (int)cmd.Parameters["@status"].Value;
                     int? roleId = cmd.Parameters["@RoleId"].Value as int?;
 
-                    HttpContext.Session.SetString("AccessCode", userNam);
+                    HttpContext.Session.SetString("AccessCode", accessCode);
 
                     ViewBag.Status = status;
 
                     if (status == 1)
                     {
-                        ViewBag.Alert = AlertServices.ShowAlert(Alerts.Success, "Login Success!");
-
                         if (roleId.HasValue)
                         {
                             HttpContext.Session.SetInt32("RoleId", roleId.Value);
                         }
+
+                        HttpContext.Session.SetString("SessionStarted", DateTime.Now.ToString());
+                        ViewBag.Alert = AlertServices.ShowAlert(Alerts.Success, "Login Success!");
                     }
                     else
                     {
@@ -120,5 +122,12 @@ namespace IssueTracker.Controllers
                 return PartialView("Index");
             }
         }
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            return RedirectToAction("Login", "Index");
+        }
+
     }
 }

@@ -6,13 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
+    <link rel="icon" href="~/lib/img/IssueTracker-logo.png" type="image/gif" sizes="16x16" />
+
     <title class="sysTitle">IssueTracker - Login</title>
 
     <environment include="Development">
         <link href="~/lib/css/bootstrap.min.css" rel="stylesheet" />
         <link href="~/lib/css/font-awesome.min.css" rel="stylesheet" />
-
-        @*<script src="https://kit.fontawesome.com/a076d05399.js"></script>*@
 
         <script src="~/lib/js/kit.fontawesome.js"></script>
         <script src="~/lib/js/jquery.min.js"></script>
@@ -34,45 +34,33 @@
             justify-content: center;
             background-color: #f5f5f5;
         }
-
         .container-login {
             width: 500px;
             margin: 15px;
             padding: 10px;
         }
 
-        .text-small {
-            font-size: 14px;
-        }
-
-        .login-header {
-            text-align: center;
-        }
-
         .sysTitle {
             color: #4f4f4f;
-            font-weight: 600;
-            font-size: 18px;
         }
 
-        .btnConfirm {
-            color: #111;
-            padding: 10px;
+        .btnLogin {
+            padding: 8px;
             width: 100%;
-            font-size: 20px;
-            border: solid #364764 1px;
-            border-radius: 10px;
+            font-size: 18px;
+            border: 1px solid #364764;
+            border-radius: 5px;
             background: none;
             -webkit-transition: 0.2s;
             transition: 0.2s;
         }
-        .btnConfirm:hover {
+        .btnLogin:hover {
             color: #fff;
             background-color: #364764;
             -webkit-transition: 0.3s ease-out;
             transition: 0.3s ease-out;
         }
-        .container .btnConfirm i {
+        .btnLogin i {
             margin-right: 15px;
         }
 
@@ -139,30 +127,34 @@
             <div class="card shadow-sm" style="border-radius: 20px">
                 <div class="card-body">
                     <div class="container">
-                        <div class="login-header p-2">
-                            <div class="login-logo">
-                                <img src="~/lib/img/IssueTracker-logo.png" style="border-radius: 5px" class="figure-img" width="160" />
-                            </div>
-                            <label class="sysTitle">Issue Tracker System</label>
+                        <div class="login-header text-center p-2 mb-5">
+                            <h4 style="font-weight: 400;">Login to</h4>
+                            <h3 class="sysTitle">Issue Tracker System</h3>
                         </div>
+
+                        <section class="container-fluid">
+                            <p class="small">Please fill in your credentials to login.</p>
+                        </section>
 
                         <form asp-action="Validate" asp-controller="Login" method="post">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                             <div class="form-group">
-                                <label for="Username" class="text-black mb-1">Username</label>
+                                <label for="AccessCode" class="text-black mb-2">Access Code</label>
                                 <input type="text" class="form-control" asp-for="AccessCode" autocomplete="off" />
                             </div>
+
                             <div class="form-group">
-                                <label for="Password" class="text-black mb-1">Password</label>
+                                <label for="Password" class="text-black mb-2">Password</label>
                                 <input type="password" class="form-control" asp-for="Password" autocomplete="off" />
                             </div>
 
-                            <div class="d-flex flex-row-reverse p-2">
-                                <a href="" class="text-small" style="color: #115272; text-decoration: none">Forgot password?</a>
+                            <div class="form-group mt-2" style="text-align:center">
+                                <button type="submit" class="btnLogin"><i class="fa fa-lock small"></i>Secure Login</button>
                             </div>
 
-                            <div class="container" style="text-align:center">
-                                <button type="submit" class="btnConfirm"><i class="fa fa-lock small"></i>Secure Login</button>
+                            <div class="form-group text-center mt-3">
+                                <a href="" class="text-small" style="color: #115272; text-decoration: none">Forgot password?</a>
                             </div>
                         </form>
                     </div>

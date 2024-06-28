@@ -141,11 +141,10 @@
                 <input type="date" class="form-control" />
             </div>
         </div>
-        <div class="form-group"></div>
     </div>
     <!-- End Filter -->
 
-    <button class="btn btnAddTicket" onclick="btnNewTicket()">
+    <button class="btnAddTicket" onclick="btnNewTicket()">
         <i class="fa fa-plus-circle"></i>&nbsp;Create Ticket
     </button>
 
@@ -189,7 +188,7 @@
                     @foreach (var item in Model.TicketList)
                     {
                         <tr>
-                            <td style="width: 8%; text-align: center">
+                            <td style="width: 5%; text-align: center">
                                 @Html.ActionLink(item.TicketID, "TicketDetails", "TicketDetails", new { ID = item.TicketID }, new { @class = "reqstBtn" })
                             </td>
                             <td style="width: 40%">

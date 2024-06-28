@@ -1,13 +1,6 @@
-using System;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Session;
-
+using IssueTracker.Models;
 using IssueTracker.SystemServices;
-using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 namespace IssueTracker
 {
@@ -25,14 +18,6 @@ namespace IssueTracker
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDistributedMemoryCache();
-            services.AddSession(options =>
-            {
-                // Configure session options
-                options.Cookie.Name = "Session";
-                //options.IdleTimeout = TimeSpan.FromSeconds(30); // Set the session timeout value as desired
-            });
-
             services.AddMvc();
             services.Configure<StaticFileOptions>(options =>
             {
@@ -58,6 +43,15 @@ namespace IssueTracker
             services.AddMvc().AddRazorPagesOptions(options => {
                 options.Conventions.AddPageRoute("/Dashboard/Dashboard", "");
             });
+
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(2);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,9 +70,11 @@ namespace IssueTracker
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseSession();
 
-            app.UseAuthorization();
+            app.UseMiddleware<SessionExpireMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
