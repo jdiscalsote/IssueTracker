@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
 using IssueTracker.Models;
-using IssueTracker.SystemServices;
 using IssueTracker.SystemModels;
+using IssueTracker.SystemServices;
 
 namespace IssueTracker.Controllers
 {

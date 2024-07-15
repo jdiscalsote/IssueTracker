@@ -42,7 +42,7 @@ namespace IssueTracker.Controllers
             }
 
             var ticketId = HttpContext.Request.RouteValues["ID"];
-            ViewBag.TicketID = "#" + ticketId;
+            ViewBag.TicketID = ticketId;
 
             return View(Ticket(ticketId.ToString()));
         }
@@ -80,7 +80,6 @@ namespace IssueTracker.Controllers
 
             return null;
         }
-
 
         public DataSet GetRoleName(int roleId)
         {

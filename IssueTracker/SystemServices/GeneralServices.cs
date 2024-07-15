@@ -56,5 +56,17 @@ namespace IssueTracker.SystemServices
 
             return DBHelper.ExecuteParamerizedReader("sp_GetTicketDetails", CommandType.StoredProcedure, myparams);
         }
+
+        //Get Account Settings Information [Settings]
+        public DataSet GetAccountSettings(string accessCode, string strStatement)
+        {
+            SqlParameter[] myparams = new SqlParameter[]
+            {
+                new SqlParameter("@accessCode", accessCode),
+                new SqlParameter("@strStatement", strStatement)
+            };
+
+            return DBHelper.ExecuteParamerizedReader("sp_GetAccountSettings", CommandType.StoredProcedure, myparams);
+        }
     }
 }

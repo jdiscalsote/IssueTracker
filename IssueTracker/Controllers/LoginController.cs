@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using IssueTracker.Models;
 using IssueTracker.SystemModels;
 using IssueTracker.SystemServices;
-using Microsoft.AspNetCore.Identity;
 
 namespace IssueTracker.Controllers
 {
@@ -128,6 +127,5 @@ namespace IssueTracker.Controllers
         {
             return RedirectToAction("Login", "Index");
         }
-
     }
 }
