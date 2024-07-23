@@ -33,7 +33,7 @@ namespace IssueTracker.Controllers
             if (roleId.HasValue)
             {
                 // Call the GetRoleName method
-                DataSet dsRoleName = GetRoleName(roleId.Value);
+                DataSet dsRoleName = requestServices.GetUserRoleName(roleId.Value, "getRoleName");
                 if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
                 {
                     string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
@@ -76,25 +76,6 @@ namespace IssueTracker.Controllers
 
                     return detailsObj;
                 }
-            }
-
-            return null;
-        }
-
-        public DataSet GetRoleName(int roleId)
-        {
-            if (ModelState.IsValid)
-            {
-                DataSet dsRoleName = requestServices.GetRoleName(roleId);
-
-                if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
-                {
-                    string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
-                    TempData["RoleName"] = roleName;
-                    return dsRoleName;
-                }
-
-                return null;
             }
 
             return null;

@@ -1,19 +1,61 @@
 ﻿@model IssueTracker.Models.AccountModel
 @{
-    ViewBag.Name = TempData["RoleName"] as string;
     ViewBag.Title = "Account";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
 
 <style>
+    .card {
+        border-radius: 15px;
+    }
+
     .form-group {
         padding: 10px;
+        font-size: 16px;
+    }
+    .form-group label {
+        font-weight: 500;
     }
     .form-control:read-only {
+        margin: 0;
+        padding: 0;
+        border: none;
         background-color: #fff;
     }
     .form-control:read-only:hover {
         cursor: not-allowed;
+    }
+    .form-control:read-only:focus {
+        border: none;
+    }
+
+    .btnUpdate {
+        font-size: 16px;
+        font-weight: 500;
+        border: 2px solid;
+        border-radius: 13px;    
+        padding: 8px 30px 8px 30px;
+    }
+    .btnUpdate:hover {
+        border: 2px solid;
+    }
+    .btnUpdate:focus {
+        box-shadow: none;
+        border: 2px solid;
+    }
+
+    .btnEdit {
+        color: #657c92;
+        font-size: 12px;
+        padding: 13px;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        background: none;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #657c92;
     }
 </style>
 
@@ -30,12 +72,22 @@
     </nav>
     <!-- End Header -->
 
-    <div class="card shadow-sm mb-3">
-        <div class="card-body">
-            <h5>Account Information</h5>
+    <div class="row p-2">
+        <div class="col-sm-6 col-md-6 col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex">
+                            <h5 class="p-2">Account Information</h5>
+                        </div>
 
-            <div class="row">
-                <div class="col-sm-6 col-md-6 col-lg-6">
+                        <div class="d-flex">
+                            <button class="btnEdit" >
+                                <i class="fa fa-pen"></i>
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label class="text-black mb-1">Employee No.</label>
                         @Html.TextBoxFor(Model => Model.EmployeeNo, new { @class = "form-control", @readonly = "true" })
@@ -52,8 +104,6 @@
                         <label class="text-black mb-1">Last Name</label>
                         @Html.TextBoxFor(Model => Model.LastName, new { @class = "form-control", @readonly = "true" })
                     </div>
-                </div>
-                <div class="col-sm-6 col-md-6 col-lg-6">
                     <div class="form-group">
                         <label class="text-black mb-1">User Role</label>
                         @Html.TextBoxFor(Model => Model.Role, new { @class = "form-control", @readonly = "true" })
@@ -69,30 +119,24 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="card shadow-sm mb-3">
-        <div class="card-body">
-            <h5>Security</h5>
+        <div class="col-sm-6 col-md-6 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="p-2">Security</h5>
 
-            <div class="row">
-                <div class="col-sm-6 col col-lg-6">
                     <div class="form-group">
                         <label class="text-black mb-1">Access Code</label>
-                        <input type="text" class="form-control" disabled />
+                        <input type="text" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label class="text-black mb-1">Password</label>
-                        <input type="password" class="form-control" disabled />
+                        <input type="password" class="form-control" />
                     </div>
-                </div>
-            </div>
 
-            <hr />
+                    <hr />
 
-            <div class="row">
-                <div class="col-sm-6 col-md-6 col-lg-6">
-                    <h6 class="p-2">Change Password</h6>
+                    <h5 class="p-2">Change Password</h5>
 
                     <div class="form-group">
                         <label class="text-black mb-1">New Password</label>
@@ -104,7 +148,7 @@
                     </div>
 
                     <div class="form-group">
-                        <button type="submit" class="btn btn-outline-success btnEdit"><i class="fa fa-edit"></i>Update</button>
+                        <button type="submit" class="btn btn-outline-success btnUpdate">Update</button>
                     </div>
                 </div>
             </div>

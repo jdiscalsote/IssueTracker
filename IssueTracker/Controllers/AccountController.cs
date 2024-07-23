@@ -28,20 +28,19 @@ namespace IssueTracker.Controllers
 
         public IActionResult Account()
         {
+            var accessCode = HttpContext.Session.GetString("AccessCode");
             int? roleId = HttpContext.Session.GetInt32("RoleId");
 
             if (roleId.HasValue)
             {
                 // Call the GetRoleName method
-                DataSet dsRoleName = GetRoleName(roleId.Value);
+                DataSet dsRoleName = GetRoleName(roleId.Value, "getRoleName");
                 if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
                 {
                     string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
                     ViewBag.RoleName = roleName;
                 }
             }
-
-            var accessCode = HttpContext.Session.GetString("AccessCode");
 
             return View(SettingsInfo(accessCode));
         }
@@ -72,11 +71,11 @@ namespace IssueTracker.Controllers
             return null;
         }
 
-        public DataSet GetRoleName(int roleId)
+        public DataSet GetRoleName(int roleId, string strSatement)
         {
             if (ModelState.IsValid)
             {
-                DataSet dsRoleName = requestServices.GetRoleName(roleId);
+                DataSet dsRoleName = requestServices.GetUserRoleName(roleId, strSatement);
 
                 if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
                 {

@@ -23,8 +23,8 @@
 <body>
     <style>
         html, body {
+            color: #ffffff;
             height: 100%;
-            background-color: #f3f6f8;
         }
 
         .mainDev {
@@ -40,25 +40,23 @@
             padding: 10px;
         }
 
-        .sysTitle {
-            color: #4f4f4f;
-        }
-
         .btnLogin {
+            color: #ffffff;
             padding: 8px;
             width: 100%;
             font-size: 18px;
-            border: 1px solid #364764;
-            border-radius: 5px;
             background: none;
-            -webkit-transition: 0.2s;
+            border-radius: 5px;
+            border: 2px solid #fff;
             transition: 0.2s;
+            -webkit-transition: 0.2s;
         }
         .btnLogin:hover {
-            color: #fff;
-            background-color: #364764;
-            -webkit-transition: 0.3s ease-out;
+            color: #657c92;
+            background-color: #fff;
+            border: 2px solid #fff;
             transition: 0.3s ease-out;
+            -webkit-transition: 0.3s ease-out;
         }
         .btnLogin i {
             margin-right: 15px;
@@ -77,15 +75,33 @@
         .form-group input {
             padding: 10px;
         }
+        .input-group button {
+            color: #fff;
+            border: none;
+            background: #828387;
+        }
+        .input-group button:hover {
+            color: #fff;
+        }
+        .input-group button:focus {
+            outline: none;
+            box-shadow: none;
+        }
 
+        .alert-container {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: flex-end; /* Align at the bottom */
+            height: 100%; /* Ensure the container takes the full height */
+            position: relative;
+        }
         .alert {
-            top: 20px;
             opacity: 0.8;
-            right: 20px;
             padding: 10px;
             font-size: 12px;
-            position: absolute;
+            position: absolute; /* Remove if you want to use Flexbox properties directly */
         }
+
     </style>
 
     @{
@@ -116,20 +132,18 @@
         });
     </script>
 
-    <div class="row">
-        <div class="col-md-12">
-            @Html.Raw(@ViewBag.Alert)
-        </div>
-    </div>
-
     <div class="mainDev">
         <div class="container-login">
-            <div class="card shadow-sm" style="border-radius: 20px">
+            <div class="card shadow-sm" style="border-radius: 20px; background: #657c92">
                 <div class="card-body">
                     <div class="container">
                         <div class="login-header text-center p-2 mb-5">
                             <h4 style="font-weight: 400;">Login to</h4>
-                            <h3 class="sysTitle">Issue Tracker System</h3>
+                            <h3>Issue Tracker System</h3>
+                        </div>
+
+                        <div class="container-fluid alert-container">
+                            @Html.Raw(@ViewBag.Alert)
                         </div>
 
                         <section class="container-fluid">
@@ -146,7 +160,12 @@
 
                             <div class="form-group">
                                 <label for="Password" class="text-black mb-2">Password</label>
-                                <input type="password" class="form-control" asp-for="Password" autocomplete="off" />
+                                <div class="input-group mb-3">
+                                    <input type="password" class="form-control" asp-for="Password" id="password-input" autocomplete="off" />
+                                    <button type="button" class="btn" id="toggle-password">
+                                        <i class="fa fa-eye" id="toggle-icon"></i>
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="form-group mt-2" style="text-align:center">
@@ -154,14 +173,30 @@
                             </div>
 
                             <div class="form-group text-center mt-3">
-                                <a href="" class="text-small" style="color: #115272; text-decoration: none">Forgot password?</a>
+                                <a href="" class="text-small" style="color: #ffffff; text-decoration: none">Forgot password?</a>
                             </div>
-                        </form>
+                        </form>                        
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.getElementById('toggle-password').addEventListener('click', function () {
+            var passwordInput = document.getElementById('password-input');
+            var toggleIcon = document.getElementById('toggle-icon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        });
+    </script>
 
     <!-- Disabled Right Click -->
     <script type="text/javascript">

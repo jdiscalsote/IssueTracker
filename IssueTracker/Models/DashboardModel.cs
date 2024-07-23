@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 
 namespace IssueTracker.Models
@@ -7,6 +8,7 @@ namespace IssueTracker.Models
     {
         public string SelectedValue { get; set; }
 
+        [DisplayName("Ticket ID")]
         public string TicketID { get; set; }
         public string Subject { get; set; }
         public string Category { get; set; }

@@ -14,7 +14,6 @@
         <link href="~/lib/css/font-awesome.min.css" rel="stylesheet" />
         <link href="~/lib/css/style.css" rel="stylesheet" />
 
-        <script src="~/lib/js/sessionHandler.js"></script>
         <script src="~/lib/js/jquery.min.js"></script>
         <script src="~/lib/js/bootstrap.min.js"></script>
         <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
@@ -44,14 +43,18 @@
         }
 
         .navbarHeader { /*Moblie View*/
-            margin-top: -25px;
+            margin-top: -20px;
+        }
+
+        .clock {
+            color: #ffffff;
+            font-size: 12px;
         }
 
         .offcanvasSide { /*Desktop View*/
             width: 20%;
             transition: 0.5s;
         }
-
         .offcanvasMobile { /*Moblie View*/
             width: 50%;
             transition: 0.5s;
@@ -140,10 +143,6 @@
         .change .bar3 {
             transform: translate(0, -11px) rotate(45deg);
         }
-
-        .empName {
-            color: #fff;
-        }
     </style>
 
     <script>
@@ -202,8 +201,9 @@
         <div class="container-fluid navbarHeader">
             <dl class="pt-3">
                 <dt><a class="navbar-brand" href="/Dashboard/Dashboard">Issue Tracker</a></dt>
-                <dd class="small text-white" style="font-size: 12px">EndGame Tech</dd>
+                <dd class="small text-white" style="font-size: 12px">Un-Reel Dev</dd>
             </dl>
+            <div class="clock" id="clock"></div>
             <button class="btn btnMenu" type="button" data-bs-toggle="offcanvas" data-bs-target="#sideNav" onclick="openMenu(this)">
                 <div class="bar1"></div>
                 <div class="bar2"></div>
@@ -218,11 +218,8 @@
         <div class="offcanvas-header offcanvasHeader">
             <dl class="pt-4">
                 <dt>
-                    <label class="empName" ID="lblUsername">@ViewBag.Name</label>
+                    <label class="text-white"></label>
                 </dt>
-                <dd class="small text-white" style="font-size: 12px">
-                    <asp:Label ID="lblRole" runat="server" />
-                </dd>
             </dl>
         </div>
         <div class="offcanvas-body">
@@ -294,6 +291,40 @@
     <!-- End Left Side Navigation -->
 
     <script>
+        // Date and Real Time
+        function updateTime() {
+            const clockElement = document.getElementById('clock');
+            const now = new Date();
+
+            // Get and format time
+            let hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            const strTime = `${hours.toString().padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
+
+            // Get and format date
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const day = days[now.getDay()];
+            const month = months[now.getMonth()];
+            const date = now.getDate();
+            const year = now.getFullYear();
+            const strDate = `${day} ${month} ${date}, ${year}`;
+
+            // Combine date and time
+            clockElement.textContent = `${strDate} ${strTime}`;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+
+    <script>
+        // OffCanvas - Side Navigation JS
         jQuery(function ($) {
             $(window).resize(function () {
                 if (window.matchMedia('(max-width: 575px)').matches) {
@@ -329,5 +360,10 @@
         @RenderBody()
     </div>
     <!-- End Page Content -->
+
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault()); // Disable right click
+        document.addEventListener('copy', event => event.preventDefault()); // Disable copy text
+    </script>
 </body>
 </html>

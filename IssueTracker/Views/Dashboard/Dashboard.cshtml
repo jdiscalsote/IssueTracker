@@ -1,6 +1,5 @@
 ﻿@model IssueTracker.Models.DashboardModel
 @{
-    ViewBag.Name = TempData["RoleName"] as string;
     ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
@@ -10,55 +9,48 @@
         padding: 8px;
         font-size: 14px;
     }
+
     .btn-group button {
-        color: #115272;
-        padding: 8px 20px;
-        border: 1px solid #115272;
-        text-align: right;
+        color: #657c92;
         font-size: 14px;
+        text-align: right;
+        padding: 8px 20px;
+        border: 1px solid #657c92;
     }
     .btn-group button:not(:nth-last-child(-n+2)) {
+        border-radius: 0;
         border-right: none; /* Prevent double borders */
-        border-radius: 0px;
-    }
+    }   
     .btn-group button.active {
         color: #fff;
         box-shadow: none;
-        background-color: #115272;
         border-radius: 5px;
+        background-color: #657c92;
     }
 
-    .divSection2 {
-        text-align: center;
-        align-items: center;
-        justify-content: center;
-    }
-    .section2 {
+    .dashCard {
         color: #ffffff;
         margin: 0px;
         padding: 30px;
         font-size: 16px;
-        border-radius: 10px;
+        border-radius: 5px;
         background-color: #657c92;
     }
-    .section2 i {
+    .dashCard i {
         color: #ffffff;
         font-size: 30px;
         align-content: center;
     }
-    .section2 .lblCount {
+    .dashCard .lblTitle {
+        font-size: 20px;
+        align-content: center;
+    }
+    .dashCard .lblCount {
         font-size: 30px;
         font-weight: 500;
         align-content: center;
     }
-    .section2 .lblTitle {
-        font-size: 20px;
-        align-content: center;
-    }
 
-    .reqstBtn {
-        text-decoration: none;
-    }
     .table tbody td,
     .table thead tr th {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -74,6 +66,12 @@
         font-size: 12px;
         font-weight: 600;
         vertical-align: middle
+    }
+
+    .ticketNumBtn {
+        color: #657c92;
+        font-weight: 500;
+        text-decoration: none;
     }
 </style>
 
@@ -102,26 +100,41 @@
 </div>
 
 <div class="container-fluid">
-    <h3>Hello John</h3>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex">
+            <h3 style="font-family: 'Times New Roman', Times, serif; align-content:center">Dashboard</h3>
+        </div>
 
-    <br />
+        <div class="d-flex">
+            <div class="p-0">
+                <img src="~/lib/img/profile-icon.png" class="img-fluid" width="50" alt="Profile Icon" />
+            </div>
+            <div class="p-2" style="align-content: center">
+                <dl>
+                    <dt style="font-size: 14px">@ViewBag.UserName</dt>
+                    <dd class="small" style="font-size: 12px">@ViewBag.RoleName <span class="badge rounded-pill bg-success">Active</span></dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <!-- End Header -->
 
-    <div class="row">
-        <div class="col-sm-3 col-md-3 col-lg-3 mb-2">
-            <h6>Select Period:</h6>
-            <div class="row selPeriod">
-                <div class="col-sm mb-2">
-                    <input class="form-control" type="date" />
-                </div>
-                <div class="col-sm">
-                    <input class="form-control" type="date" />
-                </div>
+    <hr />
+
+    <!-- Filter -->
+    <div class="row mb-4">
+        <div class="col-sm-3 col-md-3 col-lg-3 mb-3">
+            <h6 class="text-muted">Select Period:</h6>
+            <div class="d-flex justify-content-between gap-2 selPeriod">
+                <input type="date" class="form-control" />
+                <input type="date" class="form-control" />
             </div>
         </div>
 
         <div class="col-sm-6 col-md-6 col-lg-6">
-            <h6>Filter by:</h6>
-            <div id="myButtonGroup" class="btn-group shadow-sm">
+            <h6 class="text-muted">Filter by:</h6>
+            <div id="myButtonGroup" class="btn-group">
                 @foreach (var item in Model.GroupButtonValues)
                 {
                     if (item == Model.GroupButtonValues.First())
@@ -137,14 +150,15 @@
             </div>
         </div>
     </div>
+    <!-- End Filter -->
 
-    <div class="row pt-5">
+    <div class="row mb-4">
         @foreach (var item in Model.GetDashTicketsTitle)
         {
             if (item.ID == 1)
             {
-                <div class="col-md mb-2">
-                    <div class="section2 d-flex flex-row justify-content-between shadow-sm">
+                <div class="col-md mb-3">
+                    <div class="dashCard d-flex flex-row justify-content-between">
                         <i class="far fa-list-alt"></i>
                         <label class="lblTitle">@item.Title</label>
                         <label class="lblCount">@item.Count</label>
@@ -153,8 +167,8 @@
             }
             else if (item.ID == 2)
             {
-                <div class="col-md mb-2">
-                    <div class="section2 d-flex flex-row justify-content-between shadow-sm">
+                <div class="col-md mb-3">
+                    <div class="dashCard d-flex flex-row justify-content-between">
                         <i class="fas fa-play"></i>
                         <label class="lblTitle">@item.Title</label>
                         <label class="lblCount">@item.Count</label>
@@ -163,8 +177,8 @@
             }
             else if (item.ID == 3)
             {
-                <div class="col-md mb-2">
-                    <div class="section2 d-flex flex-row justify-content-between shadow-sm">
+                <div class="col-md mb-3">
+                    <div class="dashCard d-flex flex-row justify-content-between">
                         <i class="fas fa-check"></i>
                         <label class="lblTitle">@item.Title</label>
                         <label class="lblCount">@item.Count</label>
@@ -173,8 +187,8 @@
             }
             else if (item.ID == 4)
             {
-                <div class="col-md mb-2">
-                    <div class="section2 d-flex flex-row justify-content-between shadow-sm">
+                <div class="col-md">
+                    <div class="dashCard d-flex flex-row justify-content-between">
                         <i class="far fa-clock"></i>
                         <label class="lblTitle">@item.Title</label>
                         <label class="lblCount">@item.Count</label>
@@ -184,9 +198,10 @@
         }
     </div>
 
-    <div class="row pt-3">
-        <div class="col-md-6 mb-3">
-            <div class="card shadow">
+    <div class="row">
+        <!-- Table -->
+        <div class="col-sm-6 col-md-6 col-lg-6 mb-4">
+            <div class="card">
                 <div class="card-body">
                     <h6>My Open Tickets</h6>
                     <!-- Tickets Table -->
@@ -210,17 +225,14 @@
                                         <th>
                                             @Html.DisplayNameFor(modelTitle => modelTitle.Priority)
                                         </th>
-                                        <th>
-                                            Actions
-                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var item in Model.GetOpenTicketTable)
                                     {
                                         <tr>
-                                            <td style="width: 15%; text-align: center">
-                                                @Html.ActionLink(item.TicketID, "TicketDetails", "TicketDetails", new { ID = item.TicketID }, new { @class = "reqstBtn" })
+                                            <td style="width: 13%; text-align: center">
+                                                @Html.ActionLink(item.TicketID, "TicketDetails", "TicketDetails", new { ID = item.TicketID }, new { @class = "ticketNumBtn" })
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.Subject)
@@ -234,9 +246,6 @@
                                             <td style="text-align: center">
                                                 @Html.DisplayFor(modelItem => item.Priority)
                                             </td>
-                                            <td style="text-align: center">
-                                                <a href="#" class="small" style="color: #115272;"> <i class="fa fa-ellipsis-v"></i></a>
-                                            </td>
                                         </tr>
                                     }
                                 </tbody>
@@ -246,34 +255,46 @@
                 </div>
             </div>
         </div>
-
-        <div class="col-md-6">
-            <div class="card shadow">
+        <!-- End Table -->
+        <!-- Chart -->
+        <div class="col-sm-6 col-md-6 col-lg-6">
+            <div class="card">
                 <div class="card-body">
-                    <h6>Open Tickets by Priority</h6>
                     <div id="chartContainer" class="chartContainer" style="height: 400px; width: 100%"></div>
 
                     <script>
                         window.onload = function () {
                             var chart = new CanvasJS.Chart("chartContainer", {
                                 theme: "light1", // "light1", "light2", "dark1", "dark2"
-                                //exportEnabled: true,
+                                exportFileName: "Doughnut Chart",
+                                exportEnabled: true,
                                 animationEnabled: true,
                                 title: {
-                                    text: ""
+                                    text: "Open Tickets by Priority",
+                                    fontSize: 22,
+                                    fontFamily: "Calibri",
+                                    fontWeight: "bold"
                                 },
                                 subtitles: [{
-                                    text: ""
+                                    text: "Priority Breakdown",
+                                    fontSize: 16,
+                                    fontFamily: "Calibri",
+                                    fontWeight: "normal"
                                 }],
+                                legend: {
+                                    fontSize: 14,
+                                    fontFamily: "calibri"
+                                },
                                 data: [{
-                                    type: "pie",
+                                    type: "doughnut",
                                     startAngle: 90,
                                     toolTipContent: "<b>{label}</b>: {y}",
                                     showInLegend: "true",
                                     legendText: "{label}",
                                     indexLabel: "{label} - {y}",
+                                    indexLabelFontSize: 12,
                                     dataPoints: @Html.Raw(ViewBag.DataPoints)
-                                                    }]
+                                }]
                             });
                             chart.render();
                         }
@@ -281,5 +302,6 @@
                 </div>
             </div>
         </div>
+        <!-- End Chart -->
     </div>
 </div>

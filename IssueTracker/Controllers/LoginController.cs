@@ -121,11 +121,5 @@ namespace IssueTracker.Controllers
                 return PartialView("Index");
             }
         }
-
-        [HttpPost]
-        public IActionResult Logout()
-        {
-            return RedirectToAction("Login", "Index");
-        }
     }
 }

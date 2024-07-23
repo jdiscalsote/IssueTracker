@@ -36,9 +36,10 @@ nav .breadcrumb-item.active {
     color: #115272;
 }
 
+/* Search Style */
 .has-search .form-control {
     opacity: 0.8;
-    padding: 6px;
+    padding: 8px;
     padding-left: 2rem;
     border-radius: 5px;
 }
@@ -85,21 +86,9 @@ nav .breadcrumb-item.active {
 }
 
 /* Button's Settings */
-.btnEdit, .btnAddTicket, .btnCreate, .btnCancel {
+.btnAddTicket, .btnCreate, .btnCancel {
     padding: 8px 30px 8px 30px !important;
 }
-.btnAddTicket {
-    color: #115272;
-    float: right;
-    background: none;
-    border: solid 1px #115272;
-    border-radius: 5px;
-}
-.btnAddTicket:hover {
-    color: #fff;
-    background-color: #115272;
-}
-
-.btnEdit i, .btnAddTicket i, .btnCreate i, .btnCancel i {
+.btnAddTicket i, .btnCreate i, .btnCancel i {
     margin-right: 6px;
 }

@@ -5,15 +5,28 @@ namespace IssueTracker.SystemServices
 {
     public class GeneralServices
     {
-        //Get User Role Name [Global]
-        public DataSet GetRoleName(int roleID)
+        //Get Username [Global]
+        public DataSet GetUsername(string strAccesCode, string strStatement)
         {
             SqlParameter[] myparams = new SqlParameter[]
             {
+                new SqlParameter("@strStatement", strStatement),
+                new SqlParameter("@strAccesCode", strAccesCode)
+            };
+
+            return DBHelper.ExecuteParamerizedReader("sp_GetUserInfo", CommandType.StoredProcedure, myparams);
+        }
+
+        //Get User Role Name [Global]
+        public DataSet GetUserRoleName(int roleID, string strStatement)
+        {
+            SqlParameter[] myparams = new SqlParameter[]
+            {
+                new SqlParameter("@strStatement", strStatement),
                 new SqlParameter("@roleID", roleID)
             };
 
-            return DBHelper.ExecuteParamerizedReader("sp_GetUserRoleName", CommandType.StoredProcedure, myparams);
+            return DBHelper.ExecuteParamerizedReader("sp_GetUserInfo", CommandType.StoredProcedure, myparams);
         }
 
         //Get Priority Count - Chart [Dashboard]

@@ -9,10 +9,8 @@ namespace IssueTracker
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            StaticConfig = configuration;
         }
 
-        public static IConfiguration StaticConfig { get; private set; }
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -35,23 +33,23 @@ namespace IssueTracker
                     }
                 };
             });
+
+            services.AddControllersWithViews();
             services.AddRazorPages();
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
             services.AddTransient<GeneralServices, GeneralServices>();
             services.AddSingleton<IConfiguration>(Configuration);
-            services.AddMvc().AddRazorPagesOptions(options => {
-                options.Conventions.AddPageRoute("/Dashboard/Dashboard", "");
-            });
 
-            services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(2);
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Adjust as needed
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-            services.AddControllersWithViews();
+
+            services.AddMvc().AddRazorPagesOptions(options => {
+                options.Conventions.AddPageRoute("/Dashboard/Dashboard", "");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,12 +67,13 @@ namespace IssueTracker
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseSession();
 
-            app.UseMiddleware<SessionExpireMiddleware>();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

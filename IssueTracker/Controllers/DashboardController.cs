@@ -31,16 +31,25 @@ namespace IssueTracker.Controllers
 
         public IActionResult Dashboard()
         {
+            var accessCode = HttpContext.Session.GetString("AccessCode");
             int? roleId = HttpContext.Session.GetInt32("RoleId");
 
             if (roleId.HasValue)
             {
                 // Call the GetRoleName method
-                DataSet dsRoleName = GetRoleName(roleId.Value);
+                DataSet dsRoleName = requestServices.GetUserRoleName(roleId.Value, "getRoleName");
                 if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
                 {
                     string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
                     ViewBag.RoleName = roleName;
+                }
+
+                // Call the GetUsername method
+                DataSet dsUsername = requestServices.GetUsername(accessCode, "getUsername");
+                if (dsUsername != null && dsUsername.Tables.Count > 0 && dsUsername.Tables[0].Rows.Count > 0)
+                {
+                    string userName = dsUsername.Tables[0].Rows[0]["UserName"].ToString();
+                    ViewBag.UserName = userName;
                 }
             }
 
@@ -135,25 +144,6 @@ namespace IssueTracker.Controllers
                 }
                 else { return null; }
             }
-        }
-
-        public DataSet GetRoleName(int roleId)
-        {
-            if (ModelState.IsValid)
-            {
-                DataSet dsRoleName = requestServices.GetRoleName(roleId);
-
-                if (dsRoleName != null && dsRoleName.Tables.Count > 0 && dsRoleName.Tables[0].Rows.Count > 0)
-                {
-                    string roleName = dsRoleName.Tables[0].Rows[0]["RoleName"].ToString();
-                    TempData["RoleName"] = roleName;
-                    return dsRoleName;
-                }
-
-                return null;
-            }
-
-            return null;
         }
 
         private List<GroupButtonValue> GetgroupButtonValue()
