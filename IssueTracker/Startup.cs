@@ -25,11 +25,11 @@ namespace IssueTracker
 
                     if (ctx.File.Name.EndsWith(".woff"))
                     {
-                        ctx.Context.Response.Headers.Add("Content-Type", "application/x-font-woff");
+                        ctx.Context.Response.Headers.Append("Content-Type", "application/x-font-woff");
                     }
                     else if (ctx.File.Name.EndsWith(".woff2"))
                     {
-                        ctx.Context.Response.Headers.Add("Content-Type", "application/x-font-woff2");
+                        ctx.Context.Response.Headers.Append("Content-Type", "application/x-font-woff2");
                     }
                 };
             });

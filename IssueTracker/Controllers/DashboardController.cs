@@ -48,7 +48,7 @@ namespace IssueTracker.Controllers
                 DataSet dsUsername = requestServices.GetUsername(accessCode, "getUsername");
                 if (dsUsername != null && dsUsername.Tables.Count > 0 && dsUsername.Tables[0].Rows.Count > 0)
                 {
-                    string userName = dsUsername.Tables[0].Rows[0]["UserName"].ToString();
+                    string userName = dsUsername.Tables[0].Rows[0]["Firstname"].ToString();
                     ViewBag.UserName = userName;
                 }
             }
